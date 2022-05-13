@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import "./css/TackOut.css";
 
+
 const { Panel } = Collapse;
 
 const TakeOut = () => {
