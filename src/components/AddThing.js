@@ -15,6 +15,7 @@ import {
   RedoOutlined,
   BorderlessTableOutlined,
   BankOutlined,
+  InfoCircleOutlined
 } from "@ant-design/icons";
 
 import './css/AddThing.css'
@@ -121,6 +122,10 @@ const AddThing = () => {
             name="cmpn"
             label="บริษัท"
             rules={[{ required: true, message: "กรุณากรอกชื่อบริษัท" }]}
+            tooltip={{
+              title: "หากไม่มีให้กรอก  -  ",
+              icon: <InfoCircleOutlined />,
+            }}
           >
             <Input
               placeholder="บริษัท"

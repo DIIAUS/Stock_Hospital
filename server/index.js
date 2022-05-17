@@ -30,32 +30,16 @@ const db = mysql.createConnection(
 app.get('/:tablename', (req,res)=>{
     const mode="SELECT * FROM ";
     const tablename = req.params.tablename;
-    switch(tablename){
-        case "item_group":
-            const sql_1 = mode.concat(tablename);
-            db.query(sql_1, (err,result)=>{
-                if(err){
-                    console.log(err);
-                }
-                else{
-                    res.send(result) ;
-                }
-            })
-            
-            break;
-        case "item":
-            const sql_3 = "SELECT GroupID FROM item"
-            const sql_2 = mode.concat(tablename);
-            db.query(sql_2, (err,result)=>{
-                if(err){
-                    console.log(err);
-                }
-                else{
-                    res.send(result) ;
-                }
-            })
-            break;
-    }
+    const sql = mode.concat(tablename);
+
+    db.query(sql, (err,result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result) ;
+        }
+    })
 });
 
 // app.post('/:tablename', (req,res) => {

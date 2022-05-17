@@ -15,25 +15,46 @@ const { Panel } = Collapse;
 const TakeOut = () => {
   const [serialNum, setSerialNum] = useState("");
   const [kurupan, setKurupan] = useState("");
-  const [department, setDepartment] = useState("");
-  const [name, setName] = useState("");
-  const [onhand, setOnhand] = useState([]);
+  const [department, setDepartment] = useState({});
+  const [name, setName] = useState({});
   
-
+  
   // DATABASE
   const [item, setItem] = useState([]);
   const [item_group, setItem_group] = useState([]);
+  const [onhandList, setOnhandList] = useState([]);
+  const [departmentList, setDepartmentList] = useState([]);
+  const [personList, setPersonList] = useState([]);
   // DATABASE
 
   
+  useEffect( () => {
+    get_table("onhand")
+  },[])
 
   useEffect(() => {
-    get_item("item");
-    get_item("item_group");
-    count_item();
+    get_table("item");
+    get_table("item_group");
+    get_table("department");
+    get_table("person");
+    
   }, []);
 
-  const get_item = (tablename) => {
+  const selectFunc = (val,func) =>{
+    const idx = val.indexOf("*");
+    const id = val.slice(0,idx);
+    const name =val.slice(idx+1,val.length);
+
+    switch(func){
+      case "DEPART":
+        setDepartment({ID:id , NAME:name})
+        break;
+      case "PERSON":
+        setName({ID:id , NAME:name})
+    } 
+  };
+
+ const get_table =  (tablename) => {
     Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "item":
@@ -42,6 +63,18 @@ const TakeOut = () => {
 
         case "item_group":
           setItem_group(res.data);
+          break;
+
+        case "onhand":
+          setOnhandList(res.data);
+          break;
+
+        case "department":
+          setDepartmentList(res.data);
+          break;
+
+        case "person":
+          setPersonList(res.data);
           break;
       }
     });
@@ -57,41 +90,17 @@ const TakeOut = () => {
     {
       title: "Onhand",
       className: "column-sum",
-      dataIndex: "Sum",
+      dataIndex: "Onhand",
       align: "center",
       render: (text) => <p style={{ color: "red" }}>{text}</p>,
     },
   ];
 
-
-
-  
-const count_item = () =>{
-  let arr  = []; 
-  item_group.map(group => {
-    const sum = item.filter(item => item.GroupID == group.GroupID).length;
-    arr.push({GroupName:group.GroupName ,  Sum:sum})
-  });
-  console.log("count_item",arr);
-  setOnhand(arr);
-};
-
-// const CountGroup = item_group.map(group => {
-//   const sum = item.filter(item => item.GroupID == group.GroupID).length;
-//   arr.push({GroupName:group.GroupName ,  Sum:sum})
-// });
-  
-  
-
-  
-  
-
   return (
     <>
       <h1> take out</h1>
       {/* {console.log(item)} */}
-      {/* {console.log(item_group)} */}
-      {console.log(count_item)}
+      {console.log("depart" ,departmentList)} 
       
       <div className="border-form">
         <Collapse
@@ -104,14 +113,16 @@ const count_item = () =>{
           style={{ marginBottom: "5%", border: "1px dotted gray" }}
         >
           <Panel header="Onhand" key="1" className="site-collapse-custom-panel">
+
             <Table
               columns={columns}
-              dataSource={onhand}
+              dataSource={onhandList}
               bordered
               scroll={{ y: 500 }}
             />
           </Panel>
         </Collapse>
+
         <Form layout="vertical">
           <Form.Item
             label="Serial Number"
@@ -154,11 +165,15 @@ const count_item = () =>{
             }}
           >
             <Select
-              onChange={(e) => {
-                setDepartment(e);
+              onChange={(val) => {
+                // setDepartment(e);
+                selectFunc(val,'DEPART');
               }}
             >
-              <Select.Option value="demo">Demo</Select.Option>
+            { departmentList.map((value)=>{
+                return <Select.Option value={value.DepartmentID+"*"+value.DepartmentName}> {value.DepartmentName} </Select.Option>
+              })
+            }
             </Select>
           </Form.Item>
 
@@ -171,11 +186,15 @@ const count_item = () =>{
             }}
           >
             <Select
-              onChange={(e) => {
-                setName(e);
+              onChange={(val) => {
+                selectFunc(val,'PERSON');
               }}
             >
-              <Select.Option value="demo">Demo</Select.Option>
+               { personList.map((value)=>{
+                 
+                return <Select.Option value={value.FristName+" "+value.LastName}> {value.FristName} {value.LastName}</Select.Option>
+              })
+            }
             </Select>
           </Form.Item>
 
@@ -202,11 +221,11 @@ const count_item = () =>{
               </div>
               <div className="flex-container">
                 <div id="flex-1">นำไปใช้แผนก</div>
-                <div id="flex-2">{department}</div>
+                <div id="flex-2">{department.NAME}</div>
               </div>
               <div className="flex-container">
                 <div id="flex-1">ชื่อคนเบิก</div>
-                <div id="flex-2">{name}</div>
+                <div id="flex-2">{name.NAME}</div>
               </div>
             </div>
           </Form.Item>

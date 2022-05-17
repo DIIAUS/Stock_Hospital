@@ -17,8 +17,8 @@ function App() {
     <>
     
     {/* <Login/> */}
-    <TackOut/>
-    {/* <AddThings /> */}
+    {/* <TackOut/> */}
+    <AddThings />
     
     </>
   );
