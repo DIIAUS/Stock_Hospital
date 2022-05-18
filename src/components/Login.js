@@ -3,30 +3,24 @@ import { Card, Form, Input, Layout} from "antd";
 import { EditOutlined, PlusCircleFilled } from "@ant-design/icons";
 import { Content, Footer } from "antd/lib/layout/layout";
 import './css/Login.css'
+import PropTypes from 'prop-types';
+// import swal from 'sweetalert';
 
 const { Meta } = Card;
-const Login = () => {
-  const [rawData, setRawData] = useState([
-    { name: "bank", id: 1 },
-    { name: "Joe", id: 2 },
-    { name: "ling", id: 3 },
-  ]);
+
+const Login = (props) => {
+  
   const [username , setUsername] = useState("");
-  const [password , setPassword] = useState("");
+  const [password , setPassword] = useState();
 
-  const check = (data)=>{
-    let checkData  = rawData.find(e=>e.name == data)  // edite
-    if(checkData){
-        return (checkData)    // moveTo
-    }
-    else{
-        return("err")
-    }
-    
-  }
+  
 
-  const onFinish = (values) => {
+
+  
+
+  const onFinish = async (values) => {
     console.log("Success:", values);
+   
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -34,9 +28,16 @@ const Login = () => {
   };
   return (
     <Layout>
+      {console.log(username)}
+      <button onClick={()=>props.changeWord(false)}>
+        TRUE
+      </button>
+      {/* <button onClick={()=>props.changeWord("butta")}>
+        username
+      </button> */}
     <Content>
       <div className="body">
-      {console.log(check("Bank"))}
+      {/* {console.log(check("Bank"))} */}
         <div className="card-form">
           <Card
             hoverable
@@ -76,6 +77,7 @@ const Login = () => {
                 >
                   <Input onChange={(e)=>{
                       setUsername(e.target.value);
+                      // console.log(username)
                   }}/>
                 </Form.Item>
       
@@ -89,7 +91,9 @@ const Login = () => {
                     },
                   ]}
                 >
-                  <Input.Password />
+                  <Input.Password onChange={(e)=>{
+                    setPassword(e.target.value);
+                  }}/>
                 </Form.Item>
       
                 <Form.Item
@@ -123,3 +127,7 @@ const Login = () => {
 };
 
 export default Login;
+
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired
+}

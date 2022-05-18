@@ -16,16 +16,22 @@ const db = mysql.createConnection(
 )
 
 
-// app.get('/data',(req ,res) =>{
-//     db.query("SELECT * FROM empolyees" , (err,result) =>{
-//         if(err){
-//             console.log(err);
-//         }
-//         else{
-//             res.send(result) ;
-//         } 
-//     })
-// });
+// app.use('/login', (req, res) => {
+//     res.send({
+//       token: 'test123'
+//     });
+//   });
+
+app.post('/login',(req ,res) =>{
+    db.query("SELECT * FROM login" , (err,result) =>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result) ;
+        } 
+    })
+});
 
 app.get('/:tablename', (req,res)=>{
     const mode="SELECT * FROM ";

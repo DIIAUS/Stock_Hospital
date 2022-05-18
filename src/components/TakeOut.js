@@ -28,17 +28,47 @@ const TakeOut = () => {
   // DATABASE
 
   
-  useEffect( () => {
-    get_table("onhand")
-  },[])
+  
 
   useEffect(() => {
+    get_table("onhand")
     get_table("item");
     get_table("item_group");
     get_table("department");
     get_table("person");
     
   }, []);
+
+  
+
+ const get_table =  (tablename) => {
+    Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
+      switch (tablename) {
+
+        case "onhand":
+          setOnhandList(res.data);
+          break;
+          
+        case "department":
+          setDepartmentList(res.data);
+          break;
+
+        case "person":
+          setPersonList(res.data);
+          break;
+          
+        case "item":
+          setItem(res.data);
+          break;
+
+        case "item_group":
+          setItem_group(res.data);
+          break;
+
+
+      }
+    });
+  };
 
   const selectFunc = (val,func) =>{
     const idx = val.indexOf("*");
@@ -52,32 +82,6 @@ const TakeOut = () => {
       case "PERSON":
         setName({ID:id , NAME:name})
     } 
-  };
-
- const get_table =  (tablename) => {
-    Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
-      switch (tablename) {
-        case "item":
-          setItem(res.data);
-          break;
-
-        case "item_group":
-          setItem_group(res.data);
-          break;
-
-        case "onhand":
-          setOnhandList(res.data);
-          break;
-
-        case "department":
-          setDepartmentList(res.data);
-          break;
-
-        case "person":
-          setPersonList(res.data);
-          break;
-      }
-    });
   };
 
   const columns = [

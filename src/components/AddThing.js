@@ -90,10 +90,7 @@ const AddThing = () => {
   useEffect(() => {}, [serialNum, startDate, groupID]);
   return (
     <>
-      <br />
-      <br />
-      <h1>Add Something</h1>
-
+    
       <div className="border-form">
         <Form
           {...layout}
