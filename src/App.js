@@ -1,15 +1,15 @@
-import React, { useState,useEffect } from 'react';
-import Axios from "axios";
-import Test from "./components/Blase";
-import AddEmploy from "./components/InsertEmployee";
+import React, { useState, useEffect } from "react";
+
+
 import AddThings from "./components/AddThing";
-import New from "./components/new";
+
 import MoveLoc from "./components/MoveLocation";
 import NavBar from "./components/NavBar";
 import Login from "./components/Login";
-import TestRender from "./components/TestRender";
+
 import TackOut from "./components/TakeOut";
-import TitleMenu from "./components/TitleMenu";
+import Report from "./components/Report";
+
 
 import { Router, Route, Switch } from "react-router-dom";
 
@@ -26,68 +26,71 @@ const style = {
   fontSize: "1rem",
 };
 
+
+const navTitle = ["รายงาน", "เบิกอุปกรณ์","รับอุปกรณ์", "เคลื่อนย้ายอุปกรณ์"];
 function App() {
   // const token = localStorage.getItem('accessToken');
-  const[token,setToken] = useState(() => {
-    // getting stored value
-    const saved = localStorage.getItem("USED");
+  const [token, setToken] = useState(() => {
+    const saved = localStorage.getItem("TOKEN");
     const initialValue = JSON.parse(saved);
     return initialValue || "";
   });
-  const[used ,setUsed] = useState();
 
-  const sendDataToParent = (index) => { 
-    console.log(index);
-    setUsed(index);
-  };
-
-
-  const getToken =()=>{
-    Axios.post(`http://localhost:3001/login`).then((res) => {
-        // return console.log(res.data[0].UserID);
-    });
-  }
+  const [navs,setNavs] =useState();
+  const [userData,setUserData] =  useState(() => {
+    const saved = localStorage.getItem("USDATA");
+    const initialValue = JSON.parse(saved);
+    return initialValue || "";
+  });
 
   useEffect(() => {
-    getToken();
-    localStorage.setItem("USED", JSON.stringify(token));
-  })
+    localStorage.setItem("TOKEN", JSON.stringify(token));
+    localStorage.setItem("USDATA", JSON.stringify(userData));
+  });
 
-  if(token) {
-    return <div>
-       {/* {console.log(token)} */}
-       {console.log(token)}
-       <h1>{token}</h1>
-       <Login changeWord={word=> setToken(word)}/>
-       
-    </div>
-  };
+  if (token) {
+    return (
+      <div>
+        {console.log(token)}
+        <Login changeWord={(word) => setToken(word)} userData={(data)=>setUserData(data)} />
+      </div>
+    );
+  }
+
+
+  
 
   return (
     <>
-        {console.log(token)}
-        <Switch>
-          {/* <Route exact path="/">
+      {/* {console.log("USEDNAME",userData.FristName)} */}
+      <Switch>
+        {/* <Route exact path="/">
             <Login />
           </Route>
          */}
-          
-          <div>
-            <NavBar changeWord={word=> setToken(word)}/>
-            <Route exact path="/">
-              <AddThings />
-            </Route>
-            
-            <Route path="/out">
-              <TackOut />
-            </Route>
-            <BackTop visibilityHeight="10">
-              <div style={style}>UP</div>
-            </BackTop>
-          </div>
-        </Switch>
-      
 
+        <div>
+          <NavBar changeWord={(token) => setToken(token)} statusPage={navs} userdata={userData} sendBack={(data)=>setUserData(data)}/>
+          <Route exact path="/">
+            <Report sendBack={(name) => setNavs(name)}/>
+          </Route>
+
+          <Route path="/add">
+            <AddThings sendBack={(name) => setNavs(name)}/>
+          </Route>
+
+          <Route path="/out">
+            <TackOut sendBack={(name) => setNavs(name)}/>
+          </Route>
+
+          <Route path="/mov">
+            <MoveLoc sendBack={(name) => setNavs(name)}/>
+          </Route>
+          <BackTop visibilityHeight="10">
+            <div style={style}>UP</div>
+          </BackTop>
+        </div>
+      </Switch>
     </>
   );
 }

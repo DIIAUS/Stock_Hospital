@@ -1,18 +1,47 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import {MenuOutlined,CloseOutlined} from '@ant-design/icons'
-import './css/NavBar.css'
+import { Popover } from "antd";
+import { MenuOutlined, CloseOutlined,UserOutlined,ImportOutlined } from "@ant-design/icons";
+import "./css/NavBar.css";
+import Logos from "../logo.png";
 
 function NavBar(props) {
   const [click, setClick] = useState(false);
+  const [showStatus, setShowStatus] = useState("รายงาน");
 
-  const handleClick = () => setClick(!click);
+  const handleClick = () => {
+    setClick(!click);
+  };
+  const navTitle = [
+    "รายงาน",
+    "เบิกอุปกรณ์",
+    "รับอุปกรณ์",
+    "เคลื่อนย้ายอุปกรณ์",
+  ];
+
+  const content = (
+    <div>
+      <p>{`ชื่อผู้ใช้ : ${props.userdata.FristName} ${props.userdata.LastName}`}</p>
+      <NavLink exact to="/" activeClassName="active">
+        <button
+          className="logout-btn"
+          type="button"
+          onClick={() => {
+            props.changeWord(true);
+            props.sendBack({FristName:"", LastName:""})
+          }}
+         
+        > <ImportOutlined style={{marginRight:"10px"}}/> Loguot</button>
+      </NavLink>
+    </div>
+  );
   return (
     <>
       <nav className="navbar">
         <div className="nav-container">
           <NavLink exact to="/" className="nav-logo">
-            Hospital
+          <img src={Logos} width="60" height="60" alt=""/>
+            Chonburi Hospital
           </NavLink>
 
           <ul className={click ? "nav-menu active" : "nav-menu"}>
@@ -22,20 +51,9 @@ function NavBar(props) {
                 to="/"
                 activeClassName="active"
                 className="nav-links"
-                onClick={handleClick}
+                onClick={() => handleClick()}
               >
-                Home
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                exact
-                to="/add"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                Add
+                {navTitle[0]}
               </NavLink>
             </li>
             <li className="nav-item">
@@ -44,32 +62,56 @@ function NavBar(props) {
                 to="/out"
                 activeClassName="active"
                 className="nav-links"
-                onClick={handleClick}
+                onClick={() => handleClick()}
               >
-                TackOut
+                {navTitle[1]}
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink
                 exact
-                to="/contact"
+                to="/add"
                 activeClassName="active"
                 className="nav-links"
-                onClick={handleClick}
+                onClick={() => handleClick()}
               >
-                Report
+                {navTitle[2]}
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink
+                exact
+                to="/mov"
+                activeClassName="active"
+                className="nav-links"
+                onClick={() => handleClick()}
+              >
+                {navTitle[3]}
+              </NavLink>
+            </li>
+
             <li className="nav-links">
-              <input className="logout-btn" type="button" value="Logout" onClick={()=>props.changeWord(true)}></input>
+              <Popover content={content} title="ข้อมูลผู้ใช้" trigger="click" placement="bottomRight">
+                <button
+                  className="user-btn"
+                  type="button"
+                  
+                ><UserOutlined style={{marginRight:"10px"}}/>User</button>
+              </Popover>
             </li>
           </ul>
-          <div className="nav-icon" onClick={handleClick}>
+          <div
+            className="nav-icon"
+            onClick={() => {
+              setClick(!click);
+            }}
+          >
             {/* <MenuOutlined className={click ? <CloseOutlined /> : "fas fa-bars"}/> */}
-            {click ? <CloseOutlined/>:<MenuOutlined/>}
+            {click ? <CloseOutlined /> : <MenuOutlined />}
           </div>
         </div>
       </nav>
+      <h2 className="rectangle">{props.statusPage}</h2>
     </>
   );
 }

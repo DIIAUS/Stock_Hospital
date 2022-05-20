@@ -6,13 +6,15 @@ import {
   InfoCircleOutlined,
   SaveOutlined,
   CaretRightOutlined,
+  BorderlessTableOutlined,
+  BarcodeOutlined
 } from "@ant-design/icons";
 import "./css/TackOut.css";
 
 
 const { Panel } = Collapse;
 
-const TakeOut = () => {
+const TakeOut = (props) => {
   const [serialNum, setSerialNum] = useState("");
   const [kurupan, setKurupan] = useState("");
   const [department, setDepartment] = useState({});
@@ -28,6 +30,9 @@ const TakeOut = () => {
   // DATABASE
 
   
+  useEffect(() => {
+    
+  }, []);
   
 
   useEffect(() => {
@@ -36,7 +41,7 @@ const TakeOut = () => {
     get_table("item_group");
     get_table("department");
     get_table("person");
-    
+    props.sendBack("เบิกอุปกรณ์");
   }, []);
 
   
@@ -64,8 +69,6 @@ const TakeOut = () => {
         case "item_group":
           setItem_group(res.data);
           break;
-
-
       }
     });
   };
@@ -81,6 +84,7 @@ const TakeOut = () => {
         break;
       case "PERSON":
         setName({ID:id , NAME:name})
+        break;
     } 
   };
 
@@ -101,11 +105,7 @@ const TakeOut = () => {
   ];
 
   return (
-    <>
-      <h1> take out</h1>
-      {/* {console.log(item)} */}
-      {console.log("depart" ,departmentList)} 
-      
+    <> 
       <div className="border-form">
         <Collapse
           bordered={false}
@@ -137,6 +137,7 @@ const TakeOut = () => {
             }}
           >
             <Input
+            prefix={<BarcodeOutlined />}
               placeholder="Serial Number"
               onChange={(e) => {
                 setSerialNum(e.target.value);
@@ -153,6 +154,8 @@ const TakeOut = () => {
             }}
           >
             <Input
+            
+            prefix={<BorderlessTableOutlined />}
               placeholder="เลขคุรุภัณฑ์"
               onChange={(e) => {
                 setKurupan(e.target.value);
@@ -169,8 +172,8 @@ const TakeOut = () => {
             }}
           >
             <Select
+            placeholder="เลือกแผนกที่นำไปใช้"
               onChange={(val) => {
-                // setDepartment(e);
                 selectFunc(val,'DEPART');
               }}
             >
@@ -190,6 +193,7 @@ const TakeOut = () => {
             }}
           >
             <Select
+            placeholder="เลือกผู้เบิกอุปกรณ์"
               onChange={(val) => {
                 selectFunc(val,'PERSON');
               }}
