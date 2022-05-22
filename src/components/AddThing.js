@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import moment from "moment";
+import "./css/AddThing.css";
 
 import {
   Form,
@@ -11,7 +13,7 @@ import {
   message,
 } from "antd";
 
-import moment from "moment";
+
 import {
   SaveFilled,
   RedoOutlined,
@@ -20,7 +22,7 @@ import {
   InfoCircleOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import "./css/AddThing.css";
+
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -103,8 +105,6 @@ const AddThing = (props) => {
       }
       progress(res.data);
     });
-
-
   };
 
  
@@ -159,9 +159,7 @@ const AddThing = (props) => {
     wrapperCol: { span: "500px" },
     Button: {},
   };
-  const onReset = () => {
-    form.resetFields();
-  };
+  
 
   const selectFunc = (val, func) => {
     const idx = val.indexOf("*");

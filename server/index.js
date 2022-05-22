@@ -130,11 +130,9 @@ app.post("/add_item", (req, res) => {
       }
     }
   );
-  
-  
 });
 
-app.post("/add_item_transection" , (req, res) => {
+app.post("/add_item_transection", (req, res) => {
   const SerialNumber = req.body.SerialNumber;
   const GroupID = req.body.GroupID;
   const DeviceOfCompany = req.body.DeviceOfCompany;
@@ -161,7 +159,8 @@ app.post("/add_item_transection" , (req, res) => {
       ToStoreID,
       ToLocID,
       PersonID,
-    ],(err, result) => {
+    ],
+    (err, result) => {
       if (err) {
         console.log(err);
         // res.send(err.sqlMessage);
@@ -170,11 +169,10 @@ app.post("/add_item_transection" , (req, res) => {
         console.log("update 'R' section successfully");
       }
     }
-  );  
+  );
 });
 
-
-app.post("/out_item_transection" , (req, res) => {
+app.post("/out_item_transection", (req, res) => {
   const SerialNumber = req.body.SerialNumber;
   const GroupID = req.body.GroupID;
   const DeviceOfCompany = req.body.DeviceOfCompany;
@@ -201,7 +199,8 @@ app.post("/out_item_transection" , (req, res) => {
       ToStoreID,
       ToLocID,
       PersonID,
-    ],(err, result) => {
+    ],
+    (err, result) => {
       if (err) {
         console.log(err);
         // res.send(err.sqlMessage);
@@ -210,23 +209,46 @@ app.post("/out_item_transection" , (req, res) => {
         console.log("update 'W' section successfully");
       }
     }
-  );  
+  );
 });
 
-
-
-app.post("/out_item",(req,res) => {
+app.post("/out_item", (req, res) => {
   const SerialNumber = req.body.SerialNumber;
-  db.query("DELETE FROM item WHERE SerialNumber = ?",[SerialNumber],(err, result) => {
-    if(err) {
-      console.log(err);
-    } else {
-      res.send("success");
-      console.log("delete item successfully");
+  db.query(
+    "DELETE FROM item WHERE SerialNumber = ?",
+    [SerialNumber],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send("success");
+        console.log("delete item successfully");
+      }
     }
-  })
+  );
 });
 
 app.listen("3001", () => {
   console.log("Server is running on port 3001");
+});
+
+app.post("/regis", (req, res) => {
+  const UserID = req.body.UserID;
+  const Password = req.body.Password;
+  const FristName = req.body.FristName;
+  const LastName = req.body.LastName;
+
+  db.query(
+    "INSERT INTO login (UserID, Password, FristName, LastName) VALUES (?,?,?,?)",
+    [UserID, Password, FristName, LastName],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        // res.send(err.sqlMessage);
+      } else {
+        res.send("success");
+        console.log("add newUser successfully");
+      }
+    }
+  );
 });

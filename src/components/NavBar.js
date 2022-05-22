@@ -7,8 +7,6 @@ import Logos from "../logo.png";
 
 function NavBar(props) {
   const [click, setClick] = useState(false);
-  const [showStatus, setShowStatus] = useState("รายงาน");
-
   const handleClick = () => {
     setClick(!click);
   };

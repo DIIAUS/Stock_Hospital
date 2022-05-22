@@ -9,6 +9,7 @@ import Login from "./components/Login";
 
 import TackOut from "./components/TakeOut";
 import Report from "./components/Report";
+import Register from "./components/Register"
 
 
 import { Router, Route, Switch } from "react-router-dom";
@@ -36,6 +37,8 @@ function App() {
   });
 
   const [navs,setNavs] =useState();
+  const [register,setRegister] = useState(false);
+
   const [userData,setUserData] =  useState(() => {
     const saved = localStorage.getItem("USDATA");
     const initialValue = JSON.parse(saved);
@@ -48,17 +51,20 @@ function App() {
   });
 
   if (token) {
-    return (
-      <div>
-        {console.log(token)}
-        <Login changeWord={(word) => setToken(word)} userData={(data)=>setUserData(data)} />
-        {/* <Switch>
-          <Route path="login">
-          <Login changeWord={(word) => setToken(word)} userData={(data)=>setUserData(data)} />
-          </Route>
-        </Switch> */}
-      </div>
-    );
+    if (register){
+      return(
+        <div>
+          <Register regis={res=>setRegister(res)}/>
+        </div>
+      )
+    }else{
+      return (
+        <div>
+          {console.log(token)}
+          <Login changeWord={(word) => setToken(word)} userData={(data)=>setUserData(data)} regis={res=>setRegister(res)}/>
+        </div>
+      );
+    }
   }
 
 

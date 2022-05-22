@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import { NavLink } from "react-router-dom";
 import { Card, Form, Input, Layout , message} from "antd";
 import { Content, Footer } from "antd/lib/layout/layout";
 import "./css/Login.css";
@@ -76,7 +77,7 @@ const Login = (props) => {
               hoverable
               title={<h1 style={{ textAlign: "center" }}>เข้าสู่ระบบ</h1>}
               style={{ width: "100%" }}
-              actions={[<a className="register-btn">ลงทะเบียน</a>]}
+              actions={[<a className="register-btn" onClick={e=>{props.regis(true);}}>ลงทะเบียน</a>]}
             >
               <div className="login-form">
                 <Form
