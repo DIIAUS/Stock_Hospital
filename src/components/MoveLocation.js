@@ -1,11 +1,11 @@
 import React,{useState, useEffect} from 'react';
 import Axios from 'axios'
 import {
-  Alert,
+  Modal,
   Form,
   Input,
   Select,
-  DatePicker,
+  message,
   InputNumber,
   Col,
   Row,
@@ -14,7 +14,8 @@ import moment from "moment";
 import {
   SaveOutlined,
   BarcodeOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
+  LoadingOutlined
 } from "@ant-design/icons";
 
 
@@ -23,10 +24,12 @@ const MoveLocation = (props) => {
     const [serialNum, setSerialNum] = useState("");
     const [store,setStore] = useState({});
     const [targetStore , setTargetStore] =useState({});
+    const [form] = Form.useForm();
 
     //Database
     const [tableStore, setTableStore]=useState([]);
     const [tableTarget, setTableTarget]=useState([]);
+    const [obj,setObj] = useState({});
     //Database
 
     const get_table =  (tablename) => {
@@ -43,6 +46,59 @@ const MoveLocation = (props) => {
   
         }
       });
+    };
+
+    const send_table = () => {
+      Axios.post("http://localhost:3001/send_item", {
+        SerialNumber: serialNum,
+      }).then((res) => {
+        console.log(res.data[0]);
+        if(res.data[0]){
+          Axios.post("http://localhost:3001/move_loc",{
+            SerialNumber: serialNum,
+            ToStoreID:store.StoreID,
+            ToLocID:targetStore.LocID,
+            GroupID:res.data[0].GroupID
+          }).then((res)=>{
+            progress(res.data);
+          })
+        }else{
+          message.error('ไม่มี Serial Number นี้ !!!!!');
+        }
+      });
+    };
+
+    const progress = (value) => {
+      let TIME = 2;
+      const modal = Modal.info({
+        okButtonProps: { style: { display: "none" } },
+        icon: <LoadingOutlined />,
+        content: "กำลังตรวจสอบข้อมูล",
+      });
+      const timer = setInterval(() => {
+        TIME -= 1;
+      }, 1000);
+  
+      setTimeout(() => {
+        clearInterval(timer);
+        modal.destroy();
+        console.log("mmmmm", value);
+        if (value == "success") {
+          console.log("YES VALUE IS :", value);
+          message.success("เก็บข้อมูลสำเร็จ", 5);
+          form.resetFields();
+          setEmptyState();
+        } else {
+          console.log("YES VALUE IS :", value);
+          message.error(value, 10);
+        }
+      }, TIME * 1000);
+    };
+
+    const setEmptyState = () => {
+      setSerialNum("") ;
+      setStore ({});
+      setTargetStore ({});
     };
   
     const selectFunc = (val,func) =>{
@@ -70,9 +126,9 @@ const MoveLocation = (props) => {
   return (
     <>
       <div className="border-form">
-       
-
-        <Form layout="vertical">
+        <Form layout="vertical" form={form}
+          size="defualt"
+          className="form-position" >
           <Form.Item
             label="Serial Number"
             name="s/n"
@@ -80,6 +136,7 @@ const MoveLocation = (props) => {
               title: "หมายเลข Serial Number",
               icon: <InfoCircleOutlined />,
             }}
+            rules={[{ required: true, message: "Serial Number" }]}
           >
             <Input
             prefix={<BarcodeOutlined />}
@@ -99,6 +156,7 @@ const MoveLocation = (props) => {
               title: "แผนกปลายทางที่ต้องการนำไปใช้",
               icon: <InfoCircleOutlined />,
             }}
+            rules={[{ required: true, message: "คลังสินค้า" }]}
           >
             <Select
               placeholder="เลือกคลัง"
@@ -120,6 +178,7 @@ const MoveLocation = (props) => {
               title: "ชื่อผู้เบิกอุปกรณ์",
               icon: <InfoCircleOutlined />,
             }}
+            rules={[{ required: true, message: "ที่เก็บ" }]}
           >
             <Select
               placeholder="เลือกที่เก็บ"
@@ -164,7 +223,22 @@ const MoveLocation = (props) => {
           </Form.Item>
 
           <Form.Item>
-            <button className="take-out-btn-submit">
+            <button className="take-out-btn-submit" onClick={() => {
+                if (
+                  serialNum == "" ||
+                  store.StoreName == null||
+                  targetStore.LocName == null
+                ) {
+                  message.error({
+                    content: "กรอกข้อมูลไม่ครบ",
+                    style: {
+                      marginTop: "2vh",
+                    },
+                  });
+                } else {
+                  send_table();
+                }
+              }}>
               {" "}
               <SaveOutlined /> บันทึก
             </button>

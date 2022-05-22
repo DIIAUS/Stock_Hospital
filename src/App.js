@@ -29,7 +29,6 @@ const style = {
 
 const navTitle = ["รายงาน", "เบิกอุปกรณ์","รับอุปกรณ์", "เคลื่อนย้ายอุปกรณ์"];
 function App() {
-  // const token = localStorage.getItem('accessToken');
   const [token, setToken] = useState(() => {
     const saved = localStorage.getItem("TOKEN");
     const initialValue = JSON.parse(saved);
@@ -53,6 +52,11 @@ function App() {
       <div>
         {console.log(token)}
         <Login changeWord={(word) => setToken(word)} userData={(data)=>setUserData(data)} />
+        {/* <Switch>
+          <Route path="login">
+          <Login changeWord={(word) => setToken(word)} userData={(data)=>setUserData(data)} />
+          </Route>
+        </Switch> */}
       </div>
     );
   }

@@ -1,13 +1,15 @@
 // นำอุปกรณ์ออก หรือ เบิก
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import { Form, Input, Select, Collapse, Table } from "antd";
+import { Form, Input, Select, Collapse, Table ,Modal,
+  message, } from "antd";
 import {
   InfoCircleOutlined,
   SaveOutlined,
   CaretRightOutlined,
   BorderlessTableOutlined,
-  BarcodeOutlined
+  BarcodeOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import "./css/TackOut.css";
 
@@ -19,6 +21,9 @@ const TakeOut = (props) => {
   const [kurupan, setKurupan] = useState("");
   const [department, setDepartment] = useState({});
   const [name, setName] = useState({});
+  const [localtime,setLocaltime] =useState("");
+  const [click,setClick] = useState(false);
+  const [form] = Form.useForm();
   
   
   // DATABASE
@@ -29,10 +34,16 @@ const TakeOut = (props) => {
   const [personList, setPersonList] = useState([]);
   // DATABASE
 
-  
-  useEffect(() => {
-    
-  }, []);
+  const timeNow = ()=>{
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    console.log(dateTime);
+    return(dateTime);
+  };
+
+  useEffect(() => {get_table("onhand")},[name])
   
 
   useEffect(() => {
@@ -72,6 +83,75 @@ const TakeOut = (props) => {
       }
     });
   };
+
+
+  const send_table = () => {
+    Axios.post("http://localhost:3001/send_item", {
+      SerialNumber: serialNum,
+    }).then((res) => {
+      console.log(res.data[0]);
+      // console.log(res.data);
+      if(res.data[0]){
+        Axios.post("http://localhost:3001/out_item",{
+          SerialNumber: res.data[0].SerialNumber
+        }).then((res)=>{
+          progress(res.data);
+        });
+
+        Axios.post("http://localhost:3001/out_item_transection",{
+          SerialNumber: res.data[0].SerialNumber,
+          GroupID: res.data[0].GroupID,
+          DeviceOfCompany: res.data[0].DeviceOfCompany,
+          Date: timeNow(),
+          DepartmentID: department.ID , 
+          StoreID:1,
+          LocID:1,
+          ToStoreID:0,
+          ToLocID:0,
+          PersonID:name.ID,
+          TypeID:'W',
+        });
+      }else{
+        message.error('ไม่มี Serial Number นี้ !!!!!');
+      }
+    });
+  };
+
+  const setEmptyState = () => {
+    setSerialNum("");
+    setKurupan("");
+    setDepartment({});
+    setName({});
+
+  };
+
+  const progress = (value) => {
+    let TIME = 2;
+    const modal = Modal.info({
+      okButtonProps: { style: { display: "none" } },
+      icon: <LoadingOutlined />,
+      content: "กำลังตรวจสอบข้อมูล",
+    });
+    const timer = setInterval(() => {
+      TIME -= 1;
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(timer);
+      modal.destroy();
+      if (value == "success") {
+        console.log("YES VALUE IS :", value);
+        message.success("เก็บข้อมูลสำเร็จ", 5);
+        form.resetFields();
+        setEmptyState();
+      } else {
+        console.log("YES VALUE IS :", value);
+        message.error(value, 10);
+      }
+    }, TIME * 1000);
+  };
+
+
 
   const selectFunc = (val,func) =>{
     const idx = val.indexOf("*");
@@ -127,7 +207,8 @@ const TakeOut = (props) => {
           </Panel>
         </Collapse>
 
-        <Form layout="vertical">
+        <Form layout="vertical" form={form} size="defualt"
+          className="form-position">
           <Form.Item
             label="Serial Number"
             name="s/n"
@@ -135,6 +216,7 @@ const TakeOut = (props) => {
               title: "หมายเลข Serial Number",
               icon: <InfoCircleOutlined />,
             }}
+            rules={[{ required: true, message: "Serial Number" }]}
           >
             <Input
             prefix={<BarcodeOutlined />}
@@ -152,6 +234,7 @@ const TakeOut = (props) => {
               title: "ex: 121212",
               icon: <InfoCircleOutlined />,
             }}
+            rules={[{ required: true, message: "เลขคุรุภัณฑ์" }]}
           >
             <Input
             
@@ -170,6 +253,7 @@ const TakeOut = (props) => {
               title: "แผนกปลายทางที่ต้องการนำไปใช้",
               icon: <InfoCircleOutlined />,
             }}
+            rules={[{ required: true, message: "นำไปใช้แผนก" }]}
           >
             <Select
             placeholder="เลือกแผนกที่นำไปใช้"
@@ -191,6 +275,7 @@ const TakeOut = (props) => {
               title: "ชื่อผู้เบิกอุปกรณ์",
               icon: <InfoCircleOutlined />,
             }}
+            rules={[{ required: true, message: "ชื่อคนเบิก" }]}
           >
             <Select
             placeholder="เลือกผู้เบิกอุปกรณ์"
@@ -200,7 +285,7 @@ const TakeOut = (props) => {
             >
                { personList.map((value)=>{
                  
-                return <Select.Option value={value.FristName+" "+value.LastName}> {value.FristName} {value.LastName}</Select.Option>
+                return <Select.Option value={value.Id+"*"+value.FristName+" "+value.LastName}> {value.FristName} {value.LastName}</Select.Option>
               })
             }
             </Select>
@@ -239,7 +324,24 @@ const TakeOut = (props) => {
           </Form.Item>
 
           <Form.Item>
-            <button className="take-out-btn-submit">
+            <button className="take-out-btn-submit" onClick={()=>{
+              if (
+                serialNum == "" ||
+                kurupan == "" ||
+                department.NAME== "" ||
+                name.NAME == ""
+              ) {
+                message.error({
+                  content: "กรอกข้อมูลไม่ครบ",
+                  style: {
+                    marginTop: "2vh",
+                  },
+                });
+              } else {
+                send_table();
+              }
+              
+              }}>
               {" "}
               <SaveOutlined /> บันทึก
             </button>

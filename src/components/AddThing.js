@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Axios from 'axios'
+import Axios from "axios";
 
 import {
-  Alert,
   Form,
   Input,
   Select,
   DatePicker,
   InputNumber,
   Modal,
-  Spin
+  message,
 } from "antd";
-
-
 
 import moment from "moment";
 import {
@@ -21,29 +18,14 @@ import {
   BarcodeOutlined,
   BankOutlined,
   InfoCircleOutlined,
-  LoadingOutlined
+  LoadingOutlined,
 } from "@ant-design/icons";
-import './css/AddThing.css'
-
+import "./css/AddThing.css";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-const succesAlert = () => {
-  return <Alert message="Success Tips" type="success" showIcon />;
-};
 
 const AddThing = (props) => {
-  const datas = [
-    { id: 1, name: "nathan" },
-    { id: 2, name: "john" },
-    { id: 3, name: "mayers" },
-    { id: 4, name: "law" },
-  ];
-
-
-
-  
-
   const suffixSelector = (
     <Form.Item name="suffix" noStyle>
       <Select
@@ -61,9 +43,7 @@ const AddThing = (props) => {
     </Form.Item>
   );
 
-  const [data, updateData] = useState(datas);
   const [serialNum, setSerialNum] = useState("");
-  const [groupID, setGroupID] = useState();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [count, setCount] = useState();
@@ -76,7 +56,7 @@ const AddThing = (props) => {
   const [type, setType] = useState([]);
   // databases
 
-  const get_table =  (tablename) => {
+  const get_table = (tablename) => {
     Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "item_group":
@@ -86,18 +66,84 @@ const AddThing = (props) => {
     });
   };
 
-  const send_table =()=>{
-    Axios.post('http://localhost:3001/send_item',{
-      SerialNumber:serialNum,
-      GroupID:type.GroupID,
-      DeviceOfCompany:company,
-      Onhand:count,
-      UmCode:1,
-      FristDate:startDate,
-      LastDate:endDate
-    }).then((res)=>{
+  const send_table = () => {
+    Axios.post("http://localhost:3001/add_item", {
+      SerialNumber: serialNum,
+      GroupID: type.GroupID,
+      DeviceOfCompany: company,
+      Onhand: count,
+      UmCode: 1,
+      FristDate: startDate,
+      LastDate: endDate,
+
+      Date: startDate,
+      DepartmentID: 0 , 
+      StoreID:1,
+      LocID:1,
+      ToStoreID:0,
+      ToLocID:0,
+      PersonID:0,
+      TypeID:'R',
+    }).then((res) => {
       console.log(res.data);
+      if(res.data=="success"){
+        Axios.post("http://localhost:3001/add_item_transection",{
+          SerialNumber: serialNum,
+          GroupID: type.GroupID,
+          DeviceOfCompany: company,
+          Date: startDate,
+          DepartmentID: 0 , 
+          StoreID:1,
+          LocID:1,
+          ToStoreID:0,
+          ToLocID:0,
+          PersonID:0,
+          TypeID:'R',
+        });
+      }
+      progress(res.data);
     });
+
+
+  };
+
+ 
+
+  const progress = (value) => {
+    let TIME = 2;
+    const modal = Modal.info({
+      okButtonProps: { style: { display: "none" } },
+      icon: <LoadingOutlined />,
+      content: "กำลังตรวจสอบข้อมูล",
+    });
+    const timer = setInterval(() => {
+      TIME -= 1;
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(timer);
+      modal.destroy();
+      console.log("mmmmm", value);
+      if (value == "success") {
+        console.log("YES VALUE IS :", value);
+        message.success("เก็บข้อมูลสำเร็จ", 5);
+        form.resetFields();
+        setEmptyState();
+      } else {
+        console.log("YES VALUE IS :", value);
+        message.error(value , 10);
+      }
+    }, TIME * 1000);
+  };
+
+  const setEmptyState = () => {
+    setSerialNum("");
+    setType({ GroupID: "", GroupName: "" });
+    setStartDate("");
+    setEndDate("");
+    setCompany("");
+    setCount(0);
+    setSuffix("");
   };
 
   function onChange(value, dateString) {
@@ -106,10 +152,6 @@ const AddThing = (props) => {
     console.log("End Time: ", dateString[1]);
     setStartDate(dateString[0]);
     setEndDate(dateString[1]);
-  }
-
-  function onOk(value) {
-    console.log("onOk: ", value.Date);
   }
 
   const layout = {
@@ -121,42 +163,24 @@ const AddThing = (props) => {
     form.resetFields();
   };
 
-  const selectFunc = (val,func) =>{
+  const selectFunc = (val, func) => {
     const idx = val.indexOf("*");
-    const GroupID = val.slice(0,idx);
-    const GroupName =val.slice(idx+1,val.length);
+    const GroupID = val.slice(0, idx);
+    const GroupName = val.slice(idx + 1, val.length);
 
-    switch(func){
+    switch (func) {
       case "Type":
-        setType({GroupID:GroupID , GroupName:GroupName})
+        setType({ GroupID: GroupID, GroupName: GroupName });
         break;
-    } 
-  };
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-
-  function countDown() {
-    let secondsToGo = 3;
-    const modal = Modal.info({
-      okButtonProps : { style: { display: 'none' } },
-      icon:<LoadingOutlined/>,
-      content:"กำลังตรวจสอบข้อมูล"
-    });
-    const timer = setInterval(() => {
-      secondsToGo -= 1;
-    }, 1000);
-    setTimeout(() => {
-      clearInterval(timer);
-      modal.destroy();
-    }, secondsToGo * 1000);
+    }
   };
 
   useEffect(() => {
     props.sendBack("รับอุปกรณ์");
-    get_table('item_group');
+    get_table("item_group");
   }, []);
   return (
     <>
-    
       <div className="border-form">
         <Form
           {...layout}
@@ -210,12 +234,16 @@ const AddThing = (props) => {
               placeholder="เลือกประเภท"
               style={{ position: "relative", maxWidth: "100%" }}
               onChange={(val) => {
-                selectFunc(val,'Type')
+                selectFunc(val, "Type");
               }}
               allowClear
             >
               {group.map((val) => {
-                return <Select.Option value={val.GroupID+"*"+val.GroupName}>{val.GroupName}</Select.Option>;
+                return (
+                  <Select.Option value={val.GroupID + "*" + val.GroupName}>
+                    {val.GroupName}
+                  </Select.Option>
+                );
               })}
             </Select>
           </Form.Item>
@@ -231,7 +259,7 @@ const AddThing = (props) => {
             ]}
           >
             <InputNumber
-            placeholder="กรอกจำนวน"
+              placeholder="กรอกจำนวน"
               addonAfter={suffixSelector}
               onChange={(e) => {
                 console.log(e);
@@ -287,7 +315,9 @@ const AddThing = (props) => {
               </div>
               <div className="flex-container">
                 <div id="flex-1">จำนวน</div>
-                <div id="flex-2">{count} {suffix}</div>
+                <div id="flex-2">
+                  {count} {suffix}
+                </div>
               </div>
               <div className="flex-container">
                 <div id="flex-1">วันที่รับ</div>
@@ -303,9 +333,25 @@ const AddThing = (props) => {
           <Form.Item>
             <button
               className="btn-submit"
-              onClick={()=>{
-                countDown();
-                send_table();
+              onClick={() => {
+                if (
+                  serialNum == "" ||
+                  company == "" ||
+                  type.GroupID == null ||
+                  count == null ||
+                  count == 0 ||
+                  startDate == "" ||
+                  endDate == ""
+                ) {
+                  message.error({
+                    content: "กรอกข้อมูลไม่ครบ",
+                    style: {
+                      marginTop: "2vh",
+                    },
+                  });
+                } else {
+                  send_table();
+                }
               }}
             >
               <SaveFilled style={{ marginRight: "10px", fontSize: "1.5rem" }} />
@@ -317,7 +363,7 @@ const AddThing = (props) => {
               onClick={() => {
                 form.resetFields();
                 setSerialNum("");
-                setType({GroupID:"" , GroupName:""});
+                setType({ GroupID: "", GroupName: "" });
                 setStartDate("");
                 setEndDate("");
                 setCompany("");
@@ -333,8 +379,6 @@ const AddThing = (props) => {
           </Form.Item>
         </Form>
       </div>
-
-      
     </>
   );
 };
