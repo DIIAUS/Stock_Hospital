@@ -27,8 +27,6 @@ const style = {
   fontSize: "1rem",
 };
 
-
-const navTitle = ["รายงาน", "เบิกอุปกรณ์","รับอุปกรณ์", "เคลื่อนย้ายอุปกรณ์"];
 function App() {
   const [token, setToken] = useState(() => {
     const saved = localStorage.getItem("TOKEN");

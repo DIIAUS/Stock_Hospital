@@ -21,7 +21,6 @@ const TakeOut = (props) => {
   const [kurupan, setKurupan] = useState("");
   const [department, setDepartment] = useState({});
   const [name, setName] = useState({});
-  const [localtime,setLocaltime] =useState("");
   const [click,setClick] = useState(false);
   const [form] = Form.useForm();
   
@@ -197,7 +196,6 @@ const TakeOut = (props) => {
           style={{ marginBottom: "5%", border: "1px dotted gray" }}
         >
           <Panel header="Onhand" key="1" className="site-collapse-custom-panel">
-
             <Table
               columns={columns}
               dataSource={onhandList}

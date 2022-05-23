@@ -48,7 +48,7 @@ app.post("/send_item", (req, res) => {
 app.post("/move_loc", (req, res) => {
   const SerialNumber = req.body.SerialNumber;
   const TypeID = "M";
-  const Date = "2016-10-01 00:00:00";
+  const Date = req.body.Date;
   const GroupID = req.body.GroupID;
   const StoreID = 1;
   const LocID = 1;
@@ -89,14 +89,62 @@ app.get("/:tablename", (req, res) => {
   const mode = "SELECT * FROM ";
   const tablename = req.params.tablename;
   const sql = mode.concat(tablename);
-
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(result);
-    }
-  });
+  if (tablename === "tansection_withdraw") {
+    db.query(
+      "SELECT SerialNumber, KurupanNumber,TypeID , department.DepartmentName ,Date, item_group.GroupName , person.FristName ,person.LastName FROM transaction INNER JOIN department ON transaction.DepartmentID=department.DepartmentID INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN person ON transaction.PersonID = person.Id WHERE TypeID='W' ORDER BY transaction.Id DESC; ",
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  }else if (tablename === "all_item") {
+    db.query(
+      "SELECT SerialNumber, item_group.GroupName , DeviceOfCompany ,onhand FROM item INNER JOIN item_group ON item_group.GroupID=item.GroupID ORDER BY FristDate DESC; ",
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  }else if (tablename === "transection_deposit") {
+    db.query(
+      "SELECT SerialNumber,TypeID ,Date, item_group.GroupName , DeviceOfCompany , store.StoreName , location.LocName FROM transaction INNER JOIN store ON transaction.StoreID=store.StoreID INNER JOIN location ON transaction.LocID=location.LocID INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN person ON transaction.PersonID = person.Id WHERE TypeID='R' ORDER BY transaction.Id DESC;",
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  }else if (tablename === "transection_move") {
+    db.query(
+      "SELECT SerialNumber,TypeID ,Date, item_group.GroupName , store.StoreName , location.LocName FROM transaction INNER JOIN store ON (transaction.ToStoreID=store.StoreID) INNER JOIN location ON transaction.ToLocID=location.LocID INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN person ON transaction.PersonID = person.Id WHERE TypeID='M' ORDER BY transaction.Id DESC; ",
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  }
+   
+  
+  else {
+    db.query(sql, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    });
+  }
 });
 
 app.post("/add_item", (req, res) => {
@@ -228,10 +276,6 @@ app.post("/out_item", (req, res) => {
   );
 });
 
-app.listen("3001", () => {
-  console.log("Server is running on port 3001");
-});
-
 app.post("/regis", (req, res) => {
   const UserID = req.body.UserID;
   const Password = req.body.Password;
@@ -244,11 +288,15 @@ app.post("/regis", (req, res) => {
     (err, result) => {
       if (err) {
         console.log(err);
-        // res.send(err.sqlMessage);
+        res.send(err.sqlMessage);
       } else {
         res.send("success");
         console.log("add newUser successfully");
       }
     }
   );
+});
+
+app.listen("3001", () => {
+  console.log("Server is running on port 3001");
 });

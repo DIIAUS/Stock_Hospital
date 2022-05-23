@@ -58,7 +58,8 @@ const MoveLocation = (props) => {
             SerialNumber: serialNum,
             ToStoreID:store.StoreID,
             ToLocID:targetStore.LocID,
-            GroupID:res.data[0].GroupID
+            GroupID:res.data[0].GroupID,
+            Date:timeNow(),
           }).then((res)=>{
             progress(res.data);
           })
@@ -114,6 +115,16 @@ const MoveLocation = (props) => {
           setTargetStore({LocID:id , LocName:name})
           break;
       } 
+    };
+
+
+    const timeNow = ()=>{
+      var today = new Date();
+      var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      var dateTime = date+' '+time;
+      console.log(dateTime);
+      return(dateTime);
     };
 
 

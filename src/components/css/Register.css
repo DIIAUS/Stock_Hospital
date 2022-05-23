@@ -1,0 +1,13 @@
+.back-btn{
+    position: relative;
+    background: rgb(190, 11, 11);
+    color: rgb(36, 35, 35);
+    border: none;
+    height: 2rem;
+    padding: 0 15px;
+    margin: 5px 32px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size:0.8rem;
+    font-weight: bold;
+}

@@ -39,7 +39,6 @@ const Login = (props) => {
   const checkLogin = () => {
     const inputUser = { UserID: username, Password: password };
     let token = false;
-    // console.log(inputUser);
     loginTable.map(({ UserID, Password, FristName, LastName}) => {
       const tableUser = { UserID: `${UserID}`, Password: `${Password}` };
       // console.log(tableUser);
@@ -55,7 +54,6 @@ const Login = (props) => {
     });
 
     switch (token){
-    
       case false:
         message
         .loading('กรุณารอสักครู่', 1)

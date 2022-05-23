@@ -2,12 +2,14 @@
 import React,{useState, useEffect} from 'react'
 import {Form ,Input ,message} from 'antd'
 import Axios from 'axios'
+import './css/Register.css'
 import {
   SaveFilled,
   NumberOutlined,
   UserOutlined,
   IdcardOutlined,
-  ContactsOutlined
+  ContactsOutlined,
+  ImportOutlined
 
 } from "@ant-design/icons";
 
@@ -25,13 +27,28 @@ const Receive = (props) => {
       FristName:fname,
       LastName:lname
     }).then((res)=>{
+      if(res.data == "success"){
+        message
+        .loading('กรุณารอสักครู่', 1)
+        .then(() => message.success('บันทึกสำเร็จ', 5))
+        
+        // message.success("บันทึกสำเร็จ",5)
+      }else{
+        message
+        .loading('กรุณารอสักครู่', 1)
+        .then(() => message.error(res.data,5))
+        
+      };
       console.log(res.data);
+     
     });
   }
 
   return (
     <>
-      <button onClick={e=>{props.regis(false)}}>
+      <button className="back-btn" onClick={e=>{props.regis(false)}}>
+        <ImportOutlined  style={{marginRight:"10px" , fontSize: '1rem'}}/>
+        
         กลับสู่หน้า Login
       </button>
       <div className="border-form">
@@ -124,8 +141,6 @@ const Receive = (props) => {
               <SaveFilled style={{ marginRight: "10px", fontSize: "1.5rem" }} />
               Save
             </button>
-
-           
           </Form.Item>
 
         </Form>
