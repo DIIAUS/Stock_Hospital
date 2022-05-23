@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-
 import AddThings from "./components/AddThing";
-
 import MoveLoc from "./components/MoveLocation";
 import NavBar from "./components/NavBar";
 import Login from "./components/Login";
-
 import TackOut from "./components/TakeOut";
 import Report from "./components/Report";
 import Register from "./components/Register"
 
 
-import { Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import { BackTop } from "antd";
 
