@@ -289,7 +289,6 @@ const Report = (props) => {
   
   return (
     <>
-      <h2>{"asasa"}</h2>
       <div className="border-report-form"> 
       <div class="flex-container" style={{borderBottom:"3px dotted black"}}>
         <div class="flex-item-left">

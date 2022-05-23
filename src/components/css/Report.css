@@ -36,8 +36,10 @@
     max-width:70%
   }
   #title-report{
-    background: #000;
-    color:#f1f1f1
+    background: rgb(158, 158, 158);
+    color:#f1f1f1;
+    font-size:2rem;
+    margin-bottom: 0rem;
   }
 
   @media (max-width: 800px) {
