@@ -51,7 +51,7 @@ const MoveLocation = (props) => {
   };
 
   const send_table = (serialNumberParam) => {
-    setSerialNum(serialNumberParam)
+    setSerialNum(serialNumberParam);
     Axios.post("http://localhost:3001/send_item", {
       SerialNumber: serialNumberParam,
     }).then((res) => {
@@ -66,7 +66,11 @@ const MoveLocation = (props) => {
         }).then((res) => {
           progress(res.data);
           setHistoryStatus((history) => [
-            { SN: serialNumberParam, STR: store.StoreName, PLS: targetStore.LocName },
+            {
+              SN: serialNumberParam,
+              STR: store.StoreName,
+              PLS: targetStore.LocName,
+            },
             ...history,
           ]);
         });

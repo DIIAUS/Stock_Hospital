@@ -284,14 +284,14 @@ const TakeOut = (props) => {
       title: "GroupName",
       dataIndex: "GroupName",
       align: "center",
-      render: (text) => <p style={{ color: "blue" }}>{text}</p>,
+      render: (text) => <Tag color="geekblue">{text}</Tag>
     },
     {
       title: "Onhand",
       className: "column-sum",
       dataIndex: "Onhand",
       align: "center",
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      render: (text) => <Tag color="volcano">{text}</Tag>
     },
   ];
 

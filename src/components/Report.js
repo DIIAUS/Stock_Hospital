@@ -1,8 +1,7 @@
-import React,{useState, useEffect}from 'react';
-import Axios from 'axios';
-import {Table,Switch,Input,} from 'antd';
-import './css/Report.css'
-
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+import { Table ,Tag} from "antd";
+import "./css/Report.css";
 
 const Report = (props) => {
   const [onhandList, setOnhandList] = useState([]);
@@ -10,12 +9,10 @@ const Report = (props) => {
   const [transectionDeposit, setTransectionDeposit] = useState([]);
   const [transectionMove, setTransectionMove] = useState([]);
   const [allItem, setAllItem] = useState([]);
-  const [value, setValue] = useState('');
 
-  const get_table =  (tablename) => {
+  const get_table = (tablename) => {
     Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
       switch (tablename) {
-
         case "onhand":
           setOnhandList(res.data);
           break;
@@ -31,70 +28,67 @@ const Report = (props) => {
         case "transection_deposit":
           setTransectionDeposit(res.data);
           break;
-        
+
         case "transection_move":
           setTransectionMove(res.data);
           break;
-        
-        case "":
 
+        case "":
       }
     });
   };
 
   const columns = [
     {
-      title: "GroupName",
+      title: "อุปกรณ์",
       dataIndex: "GroupName",
       align: "center",
-      render: (text) => <p style={{ color: "blue" }}>{text}</p>,
+      render: (text) => <Tag color="blue">{text}</Tag>
     },
     {
-      title: "Onhand",
+      title: "จำนวน",
       className: "column-sum",
       dataIndex: "Onhand",
       align: "center",
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      render: (text) => <Tag color=" #226816 ">{text}</Tag>
     },
   ];
 
-  const allItemColumn =[
+  const allItemColumn = [
     {
       title: "Serial Number",
       dataIndex: "SerialNumber",
       align: "center",
-      fixed: 'left',
-      width: '2%',
-      render: (text) => <p style={{ color: "blue" }}>{text}</p>,
+      fixed: "left",
+      width: "2%",
+      render: (text) => <Tag color="blue">{text}</Tag>
     },
     {
       title: "ประเภท",
       dataIndex: "GroupName",
       align: "center",
-      width: '2%',
-      filters: 
-        onhandList.map((e)=>{
-          console.log(e.GroupName);
-          return({text: e.GroupName, value:e.GroupName})
-        })
-      ,
+      width: "2%",
+      filters: onhandList.map((e) => {
+        console.log(e.GroupName);
+        return { text: e.GroupName, value: e.GroupName };
+      }),
       onFilter: (value, record) => record.GroupName.indexOf(value) === 0,
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      render: (text) => <Tag color="cyan">{text}</Tag>
     },
     {
       title: "รับจากบริษัท",
       dataIndex: "DeviceOfCompany",
       align: "center",
-      width: '4%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      width: "4%",
+      render: (text) => <Tag color="orange">{text}</Tag>
     },
     {
       title: "จำนวน",
       dataIndex: "onhand",
       align: "center",
-      width: '1%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    }
+      width: "1%",
+      render: (text) => <Tag color="#f50">{text}</Tag>
+    },
   ];
 
   const depositColumn = [
@@ -102,17 +96,17 @@ const Report = (props) => {
       title: "Serial Number",
       dataIndex: "SerialNumber",
       align: "center",
-      fixed: 'left',
-      width: '4%',
-      render: (text) => <p style={{ color: "blue" }}>{text}</p>,
+      fixed: "left",
+      width: "4%",
+      render: (text) => <Tag color="blue">{text}</Tag>
     },
     {
       title: "",
       className: "column-sum",
       dataIndex: "TypeID",
       align: "center",
-      width: '2%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      width: "2%",
+      render: (text) => <Tag color="green">{text}</Tag>
     },
 
     {
@@ -120,25 +114,25 @@ const Report = (props) => {
       className: "column-sum",
       dataIndex: "Date",
       align: "center",
-      width: '6%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      width: "6%",
+      render: (text) => <Tag color="volcano">{text}</Tag>
     },
     {
       title: "ประเภทอุปกรณ์",
       className: "column-sum",
       dataIndex: "GroupName",
       align: "center",
-      width: '3%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    },  
+      width: "3%",
+      render: (text) => <Tag color="cyan">{text}</Tag>
+    },
     {
       title: "บริษัท",
       className: "column-sum",
       dataIndex: "DeviceOfCompany",
       align: "center",
-      width: '4%',
+      width: "4%",
 
-      render: (text) => <p style={{ color: "#000" }}>{text}</p>,
+      render: (text) => <Tag color="orange">{text}</Tag>
     },
 
     {
@@ -146,9 +140,9 @@ const Report = (props) => {
       className: "column-sum",
       dataIndex: "StoreName",
       align: "center",
-      width: '4%',
+      width: "4%",
 
-      render: (text) => <p style={{ color: "#000" }}>{text}</p>,
+      render: (text) => <Tag color="geekblue">{text}</Tag>
     },
 
     {
@@ -156,9 +150,9 @@ const Report = (props) => {
       className: "column-sum",
       dataIndex: "LocName",
       align: "center",
-      width: '3%',
+      width: "3%",
 
-      render: (text) => <p style={{ color: "#000" }}>{text}</p>,
+      render: (text) => <Tag color="purple">{text}</Tag>
     },
   ];
 
@@ -167,56 +161,56 @@ const Report = (props) => {
       title: "Serial Number",
       dataIndex: "SerialNumber",
       align: "center",
-      fixed: 'left',
-      width: '5%',
-      render: (text) => <p style={{ color: "blue" }}>{text}</p>,
+      fixed: "left",
+      width: "5%",
+      render: (text) => <Tag color="blue">{text}</Tag>
     },
     {
       title: "หมายเลขคุรุภัณฑ์",
       className: "column-sum",
       dataIndex: "KurupanNumber",
       align: "center",
-      width: '5%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      width: "5%",
+      render: (text) => <Tag color="purple">{text}</Tag>
     },
     {
       title: "",
       className: "column-sum",
       dataIndex: "TypeID",
       align: "center",
-      width: '2%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      width: "2%",
+      render: (text) => <Tag color="red">{text}</Tag>
     },
     {
       title: "สถานที่นำไปใช้",
       className: "column-sum",
       dataIndex: "DepartmentName",
       align: "center",
-      width: '6%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      width: "6%",
+      render: (text) => <Tag color="geekblue">{text}</Tag>
     },
     {
       title: "วัน/เดือน/ปี ที่เบิก",
       className: "column-sum",
       dataIndex: "Date",
       align: "center",
-      width: '7%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+      width: "7%",
+      render: (text) => <Tag color="volcano">{text}</Tag>
     },
     {
       title: "ประเภทอุปกรณ์",
       className: "column-sum",
       dataIndex: "GroupName",
       align: "center",
-      width: '5%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    },  
+      width: "5%",
+      render: (text) => <Tag color="orange">{text}</Tag>
+    },
     {
       title: "ชื่อ-ผู้เบิก",
       className: "column-sum",
       dataIndex: "FristName",
       align: "center",
-      width: '4%',
+      width: "4%",
 
       render: (text) => <p style={{ color: "#000" }}>{text}</p>,
     },
@@ -226,7 +220,7 @@ const Report = (props) => {
       className: "column-sum",
       dataIndex: "LastName",
       align: "center",
-      width: '4%',
+      width: "4%",
 
       render: (text) => <p style={{ color: "#000" }}>{text}</p>,
     },
@@ -238,124 +232,132 @@ const Report = (props) => {
       className: "column-sum",
       dataIndex: "SerialNumber",
       align: "center",
-      width: '3%',
-      fixed: 'left',
-      render: (text) => <p style={{ color: "blue" }}>{text}</p>,
-    },  
+      width: "3%",
+      fixed: "left",
+      render: (text) => <Tag color="blue">{text}</Tag>
+    },
     {
       title: "",
       className: "column-sum",
       dataIndex: "TypeID",
       align: "center",
-      width: '3%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    },  
+      width: "3%",
+      render: (text) => <Tag color="magenta">{text}</Tag>
+    },
     {
       title: "วัน/เดือน/ปี ที่เคลื่อนย้าย",
       className: "column-sum",
       dataIndex: "Date",
       align: "center",
-      width: '3%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    },  
+      width: "3%",
+      render: (text) => <Tag color="volcano">{text}</Tag>
+    },
     {
       title: "ประเภทอุปกรณ์",
       className: "column-sum",
       dataIndex: "GroupName",
       align: "center",
-      width: '3%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    },  
+      width: "3%",
+      render: (text) => <Tag color="cyan">{text}</Tag>
+    },
     {
       title: "สถานที่",
       className: "column-sum",
       dataIndex: "StoreName",
       align: "center",
-      width: '3%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    },  
+      width: "3%",
+      render: (text) => <Tag color="geekblue">{text}</Tag>
+    },
     {
       title: "ที่เก็บ",
       className: "column-sum",
       dataIndex: "LocName",
       align: "center",
-      width: '3%',
-      render: (text) => <p style={{ color: "red" }}>{text}</p>,
-    },  
-
+      width: "3%",
+      render: (text) => <Tag color="purple">{text}</Tag>
+    },
   ];
 
   useEffect(() => {
     get_table("onhand");
     get_table("tansection_withdraw");
     get_table("all_item");
-    get_table("transection_deposit")
-    get_table("transection_move")
+    get_table("transection_deposit");
+    get_table("transection_move");
     props.sendBack("รายงาน");
   }, []);
-  
+
   return (
     <>
-      <div className="border-report-form"> 
-      <div class="flex-container" style={{borderBottom:"3px dotted black"}}>
-        <div class="flex-item-left">
-          <h3>Onhand</h3>
-          <Table
+      <div className="border-report-form">
+        <div
+          class="flex-container"
+          style={{ borderBottom: "3px dotted black" }}
+        >
+          <div class="flex-item-left">
+            <h3>Onhand</h3>
+            <Table
               columns={columns}
               dataSource={onhandList}
               bordered
               scroll={{ y: 500 }}
-            /></div>
-        <div class="flex-item-right">
-        <h3>อุปกรณ์ทั้งหมด</h3>
-        <Table
+            />
+          </div>
+          <div class="flex-item-right">
+            <h3>อุปกรณ์ทั้งหมด</h3>
+            <Table
               columns={allItemColumn}
               dataSource={allItem}
               bordered
-              scroll={{ y: 500 ,x: 500 }}
+              scroll={{ y: 500, x: 500 }}
             />
+          </div>
         </div>
-      </div>
 
-      <div class="flex-container" style={{marginTop:"5%" , borderBottom:"3px dotted black"}}>
-        <div class="flex-item-center">
-        <p id="title-report">ประวัติการเบิกอุปกรณ์</p>
-        <Table
+        <div
+          class="flex-container"
+          style={{ marginTop: "5%", borderBottom: "3px dotted black" }}
+        >
+          <div class="flex-item-center">
+            <p id="title-report">ประวัติการเบิกอุปกรณ์</p>
+            <Table
               columns={withDrawColumns}
               dataSource={transectionWithdaw}
               bordered
-              scroll={{ y: 500 ,x: 1100 }}
+              scroll={{ y: 500, x: 1100 }}
             />
+          </div>
         </div>
-      </div>
 
-      <div class="flex-container" style={{marginTop:"5%" , borderBottom:"3px dotted black"}}>
-        <div class="flex-item-center">
-        <p id="title-report">ประวัติการรับอุปกรณ์</p>
-        <Table
+        <div
+          class="flex-container"
+          style={{ marginTop: "5%", borderBottom: "3px dotted black" }}
+        >
+          <div class="flex-item-center">
+            <p id="title-report">ประวัติการรับอุปกรณ์</p>
+            <Table
               columns={depositColumn}
               dataSource={transectionDeposit}
               bordered
-              scroll={{ y: 500 ,x: 1100 }}
+              scroll={{ y: 500, x: 1100 }}
             />
+          </div>
         </div>
-      </div>
 
-      <div class="flex-container" style={{marginTop:"5%" }}>
-        <div class="flex-item-center">
-        <p id="title-report">ประวัติการเคลื่อนย้ายอุปกรณ์</p>
-        <Table
+        <div class="flex-container" style={{ marginTop: "5%" }}>
+          <div class="flex-item-center">
+            <p id="title-report">ประวัติการเคลื่อนย้ายอุปกรณ์</p>
+            <Table
               columns={moveColumns}
               dataSource={transectionMove}
               bordered
-              scroll={{ y: 500 ,x: 1100 }}
+              scroll={{ y: 500, x: 1100 }}
             />
+          </div>
         </div>
       </div>
-      </div>
-      
     </>
-  )
-}
+  );
+};
 
-export default Report
+export default Report;

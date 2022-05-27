@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { NavLink } from "react-router-dom";
-import { Card, Form, Input, Layout , message} from "antd";
+import { Card, Form, Input, Layout, message } from "antd";
 import { Content, Footer } from "antd/lib/layout/layout";
 import "./css/Login.css";
 import PropTypes from "prop-types";
@@ -31,43 +31,46 @@ const Login = (props) => {
 
   const success = () => {
     message
-      .loading('Action in progress..', 2.5)
-      .then(() => message.success('Loading finished', 2.5))
-      .then(() => message.info('Loading finished is finished', 2.5));
+      .loading("Action in progress..", 2.5)
+      .then(() => message.success("Loading finished", 2.5))
+      .then(() => message.info("Loading finished is finished", 2.5));
   };
 
   const checkLogin = () => {
     const inputUser = { UserID: username, Password: password };
     let token = false;
-    loginTable.map(({ UserID, Password, FristName, LastName}) => {
+    loginTable.map(({ UserID, Password, FristName, LastName }) => {
       const tableUser = { UserID: `${UserID}`, Password: `${Password}` };
       // console.log(tableUser);
       if (JSON.stringify(inputUser) == JSON.stringify(tableUser)) {
-        const nameUser ={FristName:`${FristName}`,LastName:`${LastName}`}
+        const nameUser = { FristName: `${FristName}`, LastName: `${LastName}` };
         console.log(true);
         props.userData(nameUser);
         props.changeWord(false);
-        token=true
+        token = true;
       }
-
-     
     });
 
-    switch (token){
+    switch (token) {
       case false:
         message
-        .loading('กรุณารอสักครู่', 1)
-        .then(() => message.error('ไม่พบบัญชี', 2))
+          .loading("กรุณารอสักครู่", 1)
+          .then(() => message.error("ไม่พบบัญชี", 2));
         break;
     }
   };
 
   return (
     <Layout>
-      <button style={{background:'red'}} onClick={e=>{
-        props.changeWord(false);
-        props.userData({FristName:"JOE", LastName:"DIIUAS"})
-      }}>Admin Login</button> 
+      <button
+        style={{ background: "red" }}
+        onClick={(e) => {
+          props.changeWord(false);
+          props.userData({ FristName: "JOE", LastName: "DIIUAS" });
+        }}
+      >
+        Admin Login
+      </button>
       <Content>
         <div className="body">
           <div className="card-form">
@@ -75,7 +78,16 @@ const Login = (props) => {
               hoverable
               title={<h1 style={{ textAlign: "center" }}>เข้าสู่ระบบ</h1>}
               style={{ width: "100%" }}
-              actions={[<a className="register-btn" onClick={e=>{props.regis(true);}}>ลงทะเบียน</a>]}
+              actions={[
+                <a
+                  className="register-btn"
+                  onClick={(e) => {
+                    props.regis(true);
+                  }}
+                >
+                  ลงทะเบียน
+                </a>,
+              ]}
             >
               <div className="login-form">
                 <Form
