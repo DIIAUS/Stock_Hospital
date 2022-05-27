@@ -123,6 +123,16 @@ InputNumber {
     width: 100%;
 }
 
+.scan-hover #btn-scanner{
+    background: #000;
+    color: #fff;
+};
+
+.ip-hover{
+    background: #000;
+    color: #fff;
+}
+
 
 /* =================== END Desktop Screen ==============
 *

@@ -47,7 +47,7 @@ app.post("/send_item", (req, res) => {
 
 app.post("/move_loc", (req, res) => {
   const SerialNumber = req.body.SerialNumber;
-  const TypeID = "M";
+  const TypeID = "T";
   const Date = req.body.Date;
   const GroupID = req.body.GroupID;
   const StoreID = 1;
@@ -124,7 +124,7 @@ app.get("/:tablename", (req, res) => {
     );
   }else if (tablename === "transection_move") {
     db.query(
-      "SELECT SerialNumber,TypeID ,Date, item_group.GroupName , store.StoreName , location.LocName FROM transaction INNER JOIN store ON (transaction.ToStoreID=store.StoreID) INNER JOIN location ON transaction.ToLocID=location.LocID INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN person ON transaction.PersonID = person.Id WHERE TypeID='M' ORDER BY transaction.Id DESC; ",
+      "SELECT SerialNumber,TypeID ,Date, item_group.GroupName , store.StoreName , location.LocName FROM transaction INNER JOIN store ON (transaction.ToStoreID=store.StoreID) INNER JOIN location ON transaction.ToLocID=location.LocID INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN person ON transaction.PersonID = person.Id WHERE TypeID='T' ORDER BY transaction.Id DESC; ",
       (err, result) => {
         if (err) {
           console.log(err);
@@ -223,6 +223,7 @@ app.post("/add_item_transection", (req, res) => {
 app.post("/out_item_transection", (req, res) => {
   const SerialNumber = req.body.SerialNumber;
   const GroupID = req.body.GroupID;
+  const KurupanNumber = req.body.KurupanNumber;
   const DeviceOfCompany = req.body.DeviceOfCompany;
   const Date = req.body.Date;
   const DepartmentID = req.body.DepartmentID;
@@ -234,13 +235,14 @@ app.post("/out_item_transection", (req, res) => {
   const TypeID = req.body.TypeID;
 
   db.query(
-    "INSERT INTO transaction (SerialNumber,TypeID,DepartmentID,Date,GroupID,DeviceOfCompany,StoreID,LocID,ToStoreID,ToLocID,PersonID) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO transaction (SerialNumber,TypeID,DepartmentID,Date,GroupID,KurupanNumber,DeviceOfCompany,StoreID,LocID,ToStoreID,ToLocID,PersonID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       SerialNumber,
       TypeID,
       DepartmentID,
       Date,
       GroupID,
+      KurupanNumber,
       DeviceOfCompany,
       StoreID,
       LocID,

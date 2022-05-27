@@ -28,6 +28,13 @@
     max-width: 30%;
     margin-right: 5px;
   }
+
+  .flex-item-center {
+    background-color: #ffff;
+    padding: 10px;
+    flex: 100%;
+    max-width: 100%;
+  }
   
   .flex-item-right {
     background-color: rgb(210, 210, 211);

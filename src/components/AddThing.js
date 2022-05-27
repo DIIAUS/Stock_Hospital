@@ -11,18 +11,21 @@ import {
   InputNumber,
   Modal,
   message,
+  Collapse,
+  Table,
+  Tag,
 } from "antd";
-
 
 import {
   SaveFilled,
-  RedoOutlined,
+  CaretRightOutlined,
   BarcodeOutlined,
   BankOutlined,
   InfoCircleOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
 
+const { Panel } = Collapse;
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -50,13 +53,15 @@ const AddThing = (props) => {
   const [endDate, setEndDate] = useState("");
   const [count, setCount] = useState();
   const [suffix, setSuffix] = useState("");
-  const [company, setCompany] = useState("");
-  const [form] = Form.useForm();
+  const [company, setCompany] = useState("-");
+  const [statusRadio, setStatusRadio] = useState(true);
+  const [historyStatus, setHistoryStatus] = useState([]);
+  const [form, reset] = Form.useForm();
 
-  // databases
+  // GET Databases
   const [group, setGroup] = useState([]);
   const [type, setType] = useState([]);
-  // databases
+  // GET Databases
 
   const get_table = (tablename) => {
     Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
@@ -68,9 +73,10 @@ const AddThing = (props) => {
     });
   };
 
-  const send_table = () => {
+  const send_table = (serialNumberParam) => {
+    setSerialNum(serialNumberParam);
     Axios.post("http://localhost:3001/add_item", {
-      SerialNumber: serialNum,
+      SerialNumber: serialNumberParam,
       GroupID: type.GroupID,
       DeviceOfCompany: company,
       Onhand: count,
@@ -79,38 +85,42 @@ const AddThing = (props) => {
       LastDate: endDate,
 
       Date: startDate,
-      DepartmentID: 0 , 
-      StoreID:1,
-      LocID:1,
-      ToStoreID:0,
-      ToLocID:0,
-      PersonID:0,
-      TypeID:'R',
+      DepartmentID: 0,
+      StoreID: 1,
+      LocID: 1,
+      ToStoreID: 0,
+      ToLocID: 0,
+      PersonID: 0,
+      TypeID: "R",
     }).then((res) => {
       console.log(res.data);
-      if(res.data=="success"){
-        Axios.post("http://localhost:3001/add_item_transection",{
-          SerialNumber: serialNum,
+      if (res.data == "success") {
+        Axios.post("http://localhost:3001/add_item_transection", {
+          SerialNumber: serialNumberParam,
           GroupID: type.GroupID,
           DeviceOfCompany: company,
           Date: startDate,
-          DepartmentID: 0 , 
-          StoreID:1,
-          LocID:1,
-          ToStoreID:0,
-          ToLocID:0,
-          PersonID:0,
-          TypeID:'R',
+          DepartmentID: 0,
+          StoreID: 1,
+          LocID: 1,
+          ToStoreID: 0,
+          ToLocID: 0,
+          PersonID: 0,
+          TypeID: "R",
+        }).then(() => {
+          setHistoryStatus((history) => [
+            { SN: serialNumberParam, TP: type.GroupName, OH: count },
+            ...history,
+          ]);
         });
+        form.resetFields();
       }
       progress(res.data);
     });
   };
 
- 
-
   const progress = (value) => {
-    let TIME = 2;
+    let TIME = 1;
     const modal = Modal.info({
       okButtonProps: { style: { display: "none" } },
       icon: <LoadingOutlined />,
@@ -123,15 +133,12 @@ const AddThing = (props) => {
     setTimeout(() => {
       clearInterval(timer);
       modal.destroy();
-      console.log("mmmmm", value);
       if (value == "success") {
         console.log("YES VALUE IS :", value);
-        message.success("เก็บข้อมูลสำเร็จ", 5);
-        form.resetFields();
-        setEmptyState();
+        message.success("เก็บข้อมูลสำเร็จ", 3);
       } else {
         console.log("YES VALUE IS :", value);
-        message.error(value , 10);
+        message.error(value, 5);
       }
     }, TIME * 1000);
   };
@@ -159,7 +166,6 @@ const AddThing = (props) => {
     wrapperCol: { span: "500px" },
     Button: {},
   };
-  
 
   const selectFunc = (val, func) => {
     const idx = val.indexOf("*");
@@ -173,6 +179,148 @@ const AddThing = (props) => {
     }
   };
 
+  const renderInputMN = () => {
+    return (
+      <Form.Item name="MN" label="กรอกข้อมูล">
+        <Input
+          placeholder="Serial Number"
+          prefix={<BarcodeOutlined style={{ fontSize: "3rem" }} />}
+          onChange={(e) => {
+            setSerialNum(e.target.value);
+          }}
+          autoFocus={true}
+          style={{ position: "relative", maxWidth: "100%" }}
+        />
+      </Form.Item>
+    );
+  };
+
+  const renderInputBQ = () => {
+    return (
+      <Form.Item
+        name="bq"
+        label="Barcode"
+        // rules={[{ required: true, message: "แสกน Barcode เท่านั้น !!!" }]}
+      >
+        <Input
+          placeholder="Serial Number"
+          prefix={<BarcodeOutlined style={{ fontSize: "3rem" }} />}
+          onChange={(e) => {
+            if (e.target.value.length == 13) {
+              if (
+                company == "" ||
+                type.GroupID == null ||
+                count == null ||
+                count == 0 ||
+                startDate == "" ||
+                endDate == ""
+              ) {
+                message.error({
+                  content: "กรอกข้อมูลไม่ครบ",
+                  style: {
+                    marginTop: "2vh",
+                  },
+                });
+              } else {
+                setSerialNum("");
+                send_table(e.target.value);
+              }
+              form.resetFields();
+              setSerialNum("");
+              setSerialNum(e.target.value);
+            }
+          }}
+          // onKeyDown={onKeyPressBarcode}
+          autoFocus={true}
+          style={{ position: "relative", maxWidth: "4.5rem" }}
+        />
+        {
+          <p
+            style={{
+              position: "relative",
+              background: "",
+              fontSize: "1.2rem",
+              color: "black",
+              width: "auto",
+              padding: "0 0px",
+              display: "inline-block",
+              top: 15,
+              left: 15,
+            }}
+          >
+            {serialNum}
+          </p>
+        }
+      </Form.Item>
+    );
+  };
+
+  const SaveButton = () => {
+    return (
+      <Form.Item>
+        <button
+          className="take-out-btn-submit"
+          onClick={() => {
+            if (
+              serialNum == "" ||
+              company == "" ||
+              type.GroupID == null ||
+              count == null ||
+              count == 0 ||
+              startDate == "" ||
+              endDate == ""
+            ) {
+              message.error({
+                content: "กรอกข้อมูลไม่ครบ",
+                style: {
+                  marginTop: "2vh",
+                },
+              });
+            } else {
+              setSerialNum("");
+              send_table(serialNum);
+            }
+          }}
+        >
+          {" "}
+          <SaveFilled style={{ marginRight: "10px", fontSize: "1.5rem" }} />
+          บันทึก
+        </button>
+      </Form.Item>
+    );
+  };
+
+  const history_columns = [
+    {
+      title: "Serial Number",
+      dataIndex: "SN",
+      align: "center",
+      render: (text) => <p style={{ color: "blue" }}>{text}</p>,
+    },
+    {
+      title: "ประเภท",
+      dataIndex: "TP",
+      align: "center",
+      render: (text) => <p style={{ color: "red" }}>{text}</p>,
+    },
+    {
+      title: "จำนวน",
+      dataIndex: "OH",
+      align: "center",
+      render: (text) => (
+        <p style={{ color: "black" }}>
+          {text} {suffix}
+        </p>
+      ),
+    },
+    {
+      title: "สถานะ",
+      key: "tags",
+      dataIndex: "tags",
+      render: (tags) => <Tag color="success">รับ</Tag>,
+    },
+  ];
+
   useEffect(() => {
     props.sendBack("รับอุปกรณ์");
     get_table("item_group");
@@ -181,30 +329,13 @@ const AddThing = (props) => {
     <>
       <div className="border-form">
         <Form
-          {...layout}
           form={form}
           size="defualt"
           className="form-position"
           layout="vertical"
         >
           <Form.Item
-            name="s/n"
-            label="Serial Number"
-            rules={[{ required: true, message: "กรุณากรอก Serial Number" }]}
-          >
-            <Input
-              placeholder="Serial Number"
-              prefix={<BarcodeOutlined />}
-              onChange={(e) => {
-                setSerialNum(e.target.value);
-                console.log(e.target.value);
-              }}
-              style={{ position: "relative", maxWidth: "100%" }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="cmpn"
+            // name="cmpn"
             label="บริษัท"
             rules={[{ required: true, message: "กรุณากรอกชื่อบริษัท" }]}
             tooltip={{
@@ -224,7 +355,7 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            name="group"
+            // name="group"
             label="Group"
             rules={[{ required: true, message: "กรุณากรอก Group Items" }]}
           >
@@ -247,7 +378,7 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            name="sum"
+            // name="sum"
             label="จำนวน"
             rules={[
               {
@@ -267,7 +398,7 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            name="date"
+            // name="date"
             label="วันที่กระทำกับสินค้า"
             rules={[{ required: true, message: "กรุณากรอกวันที่และเวลา" }]}
           >
@@ -285,6 +416,48 @@ const AddThing = (props) => {
               onChange={onChange}
             />
           </Form.Item>
+
+          <Form.Item label="Serial Number">
+            <button
+              style={
+                statusRadio
+                  ? {
+                      background: "#000",
+                      color: "white",
+                      width: "6rem",
+                      fontSize: "1.2rem",
+                    }
+                  : { background: "gray" }
+              }
+              onClick={(onChange) => {
+                setStatusRadio(true);
+                setSerialNum("");
+              }}
+            >
+              แสกน
+            </button>
+            <button
+              style={
+                statusRadio
+                  ? { background: "gray" }
+                  : {
+                      background: "#000",
+                      color: "white",
+                      width: "6rem",
+                      fontSize: "1.2rem",
+                    }
+              }
+              onClick={(onChange) => {
+                setStatusRadio(false);
+                setSerialNum("");
+                form.resetFields();
+              }}
+            >
+              กรอก
+            </button>
+          </Form.Item>
+
+          {statusRadio ? renderInputBQ() : renderInputMN()}
 
           <Form.Item>
             <div className="take-out-report">
@@ -327,55 +500,35 @@ const AddThing = (props) => {
               </div>
             </div>
           </Form.Item>
-
-          <Form.Item>
-            <button
-              className="btn-submit"
-              onClick={() => {
-                if (
-                  serialNum == "" ||
-                  company == "" ||
-                  type.GroupID == null ||
-                  count == null ||
-                  count == 0 ||
-                  startDate == "" ||
-                  endDate == ""
-                ) {
-                  message.error({
-                    content: "กรอกข้อมูลไม่ครบ",
-                    style: {
-                      marginTop: "2vh",
-                    },
-                  });
-                } else {
-                  send_table();
-                }
-              }}
-            >
-              <SaveFilled style={{ marginRight: "10px", fontSize: "1.5rem" }} />
-              Save
-            </button>
-
-            <button
-              className="btn-reset"
-              onClick={() => {
-                form.resetFields();
-                setSerialNum("");
-                setType({ GroupID: "", GroupName: "" });
-                setStartDate("");
-                setEndDate("");
-                setCompany("");
-                setCount();
-                setSuffix("");
-              }}
-            >
-              <RedoOutlined
-                style={{ marginRight: "10px", fontSize: "1.5rem" }}
-              />
-              Reset
-            </button>
-          </Form.Item>
+          {statusRadio ? null : SaveButton()}
         </Form>
+
+        <Collapse
+          bordered={false}
+          // defaultActiveKey={["1"]}
+          expandIcon={({ isActive }) => (
+            <CaretRightOutlined rotate={isActive ? 90 : 0} />
+          )}
+          className="site-collapse-custom-collapse"
+          style={{
+            marginBottom: "2%",
+            border: "1px dotted black",
+            marginTop: "10%",
+          }}
+        >
+          <Panel
+            header="ประวัติการทำรายการ"
+            key="1"
+            className="site-collapse-custom-panel"
+          >
+            <Table
+              columns={history_columns}
+              dataSource={historyStatus}
+              bordered
+              scroll={{ y: 200 }}
+            />
+          </Panel>
+        </Collapse>
       </div>
     </>
   );

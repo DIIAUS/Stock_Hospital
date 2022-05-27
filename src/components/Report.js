@@ -1,16 +1,16 @@
 import React,{useState, useEffect}from 'react';
 import Axios from 'axios';
-import {Table,Switch} from 'antd';
+import {Table,Switch,Input,} from 'antd';
 import './css/Report.css'
 
 
 const Report = (props) => {
-  const [fixedTop, setFixedTop] = useState(false);
   const [onhandList, setOnhandList] = useState([]);
   const [transectionWithdaw, setTransectionWithdaw] = useState([]);
   const [transectionDeposit, setTransectionDeposit] = useState([]);
   const [transectionMove, setTransectionMove] = useState([]);
   const [allItem, setAllItem] = useState([]);
+  const [value, setValue] = useState('');
 
   const get_table =  (tablename) => {
     Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
@@ -72,6 +72,13 @@ const Report = (props) => {
       dataIndex: "GroupName",
       align: "center",
       width: '2%',
+      filters: 
+        onhandList.map((e)=>{
+          console.log(e.GroupName);
+          return({text: e.GroupName, value:e.GroupName})
+        })
+      ,
+      onFilter: (value, record) => record.GroupName.indexOf(value) === 0,
       render: (text) => <p style={{ color: "red" }}>{text}</p>,
     },
     {

@@ -14,6 +14,7 @@ import { Route, Switch } from "react-router-dom";
 import { BackTop } from "antd";
 
 const style = {
+  position: "absolute",
   height: 50,
   width: 50,
   lineHeight: "50px",
@@ -22,6 +23,8 @@ const style = {
   color: "#fff",
   textAlign: "center",
   fontSize: "1rem",
+  top:"70%",
+  left:"100%"
 };
 
 function App() {
@@ -33,7 +36,6 @@ function App() {
 
   const [navs,setNavs] =useState();
   const [register,setRegister] = useState(false);
-
   const [userData,setUserData] =  useState(() => {
     const saved = localStorage.getItem("USDATA");
     const initialValue = JSON.parse(saved);
