@@ -49,6 +49,16 @@
     margin-bottom: 0rem;
   }
 
+  .anchor{
+    display:inline-flex;
+    margin-left:2%;
+  }
+
+  .anchor a{
+    margin-right: 5rem;
+    color:rgb(30, 111, 131);
+  }
+
   @media (max-width: 800px) {
     .flex-container {
       flex-direction: column;

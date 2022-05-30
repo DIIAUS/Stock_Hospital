@@ -31,22 +31,7 @@ const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const AddThing = (props) => {
-  const suffixSelector = (
-    <Form.Item name="suffix" noStyle>
-      <Select
-        style={{
-          width: 100,
-        }}
-        onChange={(e) => {
-          console.log(e);
-          setSuffix(e);
-        }}
-      >
-        <Option value="ชิ้น">ชิ้น</Option>
-        <Option value="อัน">อัน</Option>
-      </Select>
-    </Form.Item>
-  );
+  
 
   const [serialNum, setSerialNum] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -56,18 +41,52 @@ const AddThing = (props) => {
   const [company, setCompany] = useState("-");
   const [statusRadio, setStatusRadio] = useState(true);
   const [historyStatus, setHistoryStatus] = useState([]);
-  const [form, reset] = Form.useForm();
+  const [umCode ,setUmCode] = useState([]);
+  const [form] = Form.useForm();
 
   // GET Databases
   const [group, setGroup] = useState([]);
   const [type, setType] = useState([]);
   // GET Databases
 
+
+  const suffixSelector = () =>{
+    return(
+      <Form.Item name="suffix" noStyle>
+      <Select
+        style={{
+          width: 100,
+        }}
+        onChange={(e) => {
+          console.log(e);
+          setSuffix(e);
+        }}
+      >
+        {umCode.map((val) => {
+                return (
+                  <Select.Option value={val.UmCode}>
+                    {val.UnitOfMeasure}
+                  </Select.Option>
+                );
+        })}
+        
+        <Option value="ชิ้น">ชิ้น</Option>
+        <Option value="อัน">อัน</Option>
+      </Select>
+    </Form.Item>
+    )
+    
+  };
+
+
   const get_table = (tablename) => {
     Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "item_group":
           setGroup(res.data);
+          break;
+        case "unit_of_measure":
+          setUmCode(res.data);
           break;
       }
     });
@@ -324,6 +343,7 @@ const AddThing = (props) => {
   useEffect(() => {
     props.sendBack("รับอุปกรณ์");
     get_table("item_group");
+    get_table("unit_of_measure");
   }, []);
   return (
     <>
@@ -389,7 +409,7 @@ const AddThing = (props) => {
           >
             <InputNumber
               placeholder="กรอกจำนวน"
-              addonAfter={suffixSelector}
+              addonAfter={suffixSelector()}
               onChange={(e) => {
                 console.log(e);
                 setCount(e);
@@ -530,6 +550,7 @@ const AddThing = (props) => {
           </Panel>
         </Collapse>
       </div>
+      {console.log(umCode)}
     </>
   );
 };

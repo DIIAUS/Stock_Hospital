@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import { Table ,Tag} from "antd";
+import { Table ,Tag, Anchor} from "antd";
 import "./css/Report.css";
+
+
+const { Link } = Anchor;
 
 const Report = (props) => {
   const [onhandList, setOnhandList] = useState([]);
@@ -50,7 +53,7 @@ const Report = (props) => {
       className: "column-sum",
       dataIndex: "Onhand",
       align: "center",
-      render: (text) => <Tag color=" #226816 ">{text}</Tag>
+      render: (text) => <Tag color="red">{text}</Tag>
     },
   ];
 
@@ -289,6 +292,12 @@ const Report = (props) => {
 
   return (
     <>
+
+      <div className="anchor" >
+        <a href="#out">ประวัติการเบิกอุปกรณ์</a>
+        <a href="#in">ประวัติการรับอุปกรณ์</a>
+        <a href="#move">ประวัติการเคลื่อนย้ายอุปกรณ์</a>
+      </div>
       <div className="border-report-form">
         <div
           class="flex-container"
@@ -318,8 +327,8 @@ const Report = (props) => {
           class="flex-container"
           style={{ marginTop: "5%", borderBottom: "3px dotted black" }}
         >
-          <div class="flex-item-center">
-            <p id="title-report">ประวัติการเบิกอุปกรณ์</p>
+          <div id = 'out' class="flex-item-center">
+            <p id="title-report" >ประวัติการเบิกอุปกรณ์</p>
             <Table
               columns={withDrawColumns}
               dataSource={transectionWithdaw}
@@ -333,7 +342,7 @@ const Report = (props) => {
           class="flex-container"
           style={{ marginTop: "5%", borderBottom: "3px dotted black" }}
         >
-          <div class="flex-item-center">
+          <div id="in" class="flex-item-center">
             <p id="title-report">ประวัติการรับอุปกรณ์</p>
             <Table
               columns={depositColumn}
@@ -344,7 +353,7 @@ const Report = (props) => {
           </div>
         </div>
 
-        <div class="flex-container" style={{ marginTop: "5%" }}>
+        <div  id="move" class="flex-container" style={{ marginTop: "5%" }}>
           <div class="flex-item-center">
             <p id="title-report">ประวัติการเคลื่อนย้ายอุปกรณ์</p>
             <Table
