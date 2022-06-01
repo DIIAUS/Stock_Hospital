@@ -292,7 +292,6 @@ const Report = (props) => {
 
   return (
     <>
-
       <div className="anchor" >
         <a href="#out">ประวัติการเบิกอุปกรณ์</a>
         <a href="#in">ประวัติการรับอุปกรณ์</a>

@@ -61,6 +61,8 @@
   }
   
   .nav-item {
+    position:relative;
+    top:7px;
     line-height: 45px;
     margin-right: 1rem;
   }
@@ -141,12 +143,11 @@
   
   @media screen and (max-width: 1080px) {
     .nav-menu {
-      display: flex;
+      display: none;
       flex-direction: column;
       width: 100%;
       border-top: 1pxsolid #fff;
       position: absolute;
-      right: -110%;
       opacity: 1;
       transition: all 0.5s ease;
     }
@@ -158,6 +159,7 @@
       opacity: 1;
       transition: all 0.5s ease;
       z-index: 1;
+      display: flex
     }
     .nav-item .active {
       color: #ffdd40;

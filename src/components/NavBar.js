@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Popover } from "antd";
+import { Popover , Avatar} from "antd";
 import { MenuOutlined, CloseOutlined,UserOutlined,ImportOutlined } from "@ant-design/icons";
 import "./css/NavBar.css";
 import Logos from "../logo.png";
@@ -89,12 +89,20 @@ function NavBar(props) {
             </li>
 
             <li className="nav-links">
+              
               <Popover content={content} title="ข้อมูลผู้ใช้" trigger="click" placement="bottomRight">
-                <button
+                {/* <button
                   className="user-btn"
                   type="button"
                   
-                ><UserOutlined style={{marginRight:"10px"}}/>User</button>
+                ><UserOutlined style={{marginRight:"10px"}}/>User</button> */}
+                <Avatar size={46} style={{
+                  color: '#f56a00',
+                  backgroundColor: '#fde3cf',
+                  cursor:"pointer",
+                  
+              }}
+              > {props.userdata.FristName} </Avatar>
               </Popover>
             </li>
           </ul>
@@ -104,7 +112,6 @@ function NavBar(props) {
               setClick(!click);
             }}
           >
-            {/* <MenuOutlined className={click ? <CloseOutlined /> : "fas fa-bars"}/> */}
             {click ? <CloseOutlined /> : <MenuOutlined />}
           </div>
         </div>
