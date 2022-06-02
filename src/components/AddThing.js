@@ -31,8 +31,6 @@ const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const AddThing = (props) => {
-  
-
   const [serialNum, setSerialNum] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -41,43 +39,38 @@ const AddThing = (props) => {
   const [company, setCompany] = useState("-");
   const [statusRadio, setStatusRadio] = useState(true);
   const [historyStatus, setHistoryStatus] = useState([]);
-  const [umCode ,setUmCode] = useState([]);
+  const [umCode, setUmCode] = useState([]);
+  const [toggle, setToggle] = useState(true);
   const [form] = Form.useForm();
 
   // GET Databases
   const [group, setGroup] = useState([]);
   const [type, setType] = useState([]);
+  const [unit, setUnit] = useState([]);
   // GET Databases
 
-
-  const suffixSelector = () =>{
-    return(
+  const suffixSelector = () => {
+    return (
       <Form.Item name="suffix" noStyle>
-      <Select
-        style={{
-          width: 100,
-        }}
-        onChange={(e) => {
-          console.log(e);
-          setSuffix(e);
-        }}
-      >
-        {umCode.map((val) => {
-                return (
-                  <Select.Option value={val.UmCode}>
-                    {val.UnitOfMeasure}
-                  </Select.Option>
-                );
-        })}
-        
-        <Option value="ชิ้น">ชิ้น</Option>
-        <Option value="อัน">อัน</Option>
-      </Select>
-    </Form.Item>
-    )
-    
+        <Select
+          style={{
+            width: 100,
+          }}
+          onChange={(val) => {
+            selectFunc(val, "Unit");
+          }}
+        >
+          {umCode.map((val) => {
+            return (
+              <Select.Option value={val.UmCode + "*" + val.UnitOfMeasure}>
+                {val.UnitOfMeasure}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+    );
   };
-
 
   const get_table = (tablename) => {
     Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
@@ -112,7 +105,6 @@ const AddThing = (props) => {
       PersonID: 0,
       TypeID: "R",
     }).then((res) => {
-      console.log(res.data);
       if (res.data == "success") {
         Axios.post("http://localhost:3001/add_item_transection", {
           SerialNumber: serialNumberParam,
@@ -153,10 +145,8 @@ const AddThing = (props) => {
       clearInterval(timer);
       modal.destroy();
       if (value == "success") {
-        console.log("YES VALUE IS :", value);
         message.success("เก็บข้อมูลสำเร็จ", 3);
       } else {
-        console.log("YES VALUE IS :", value);
         message.error(value, 5);
       }
     }, TIME * 1000);
@@ -173,18 +163,9 @@ const AddThing = (props) => {
   };
 
   function onChange(value, dateString) {
-    // console.log('Selected Time: ', value);
-    console.log("Start Time: ", dateString[0]);
-    console.log("End Time: ", dateString[1]);
     setStartDate(dateString[0]);
     setEndDate(dateString[1]);
   }
-
-  const layout = {
-    labelCol: { span: "50 rem" },
-    wrapperCol: { span: "500px" },
-    Button: {},
-  };
 
   const selectFunc = (val, func) => {
     const idx = val.indexOf("*");
@@ -194,6 +175,9 @@ const AddThing = (props) => {
     switch (func) {
       case "Type":
         setType({ GroupID: GroupID, GroupName: GroupName });
+        break;
+      case "Unit":
+        setUnit({ Umcode: GroupID, UnitOfMeasure: GroupName });
         break;
     }
   };
@@ -345,6 +329,8 @@ const AddThing = (props) => {
     get_table("item_group");
     get_table("unit_of_measure");
   }, []);
+
+ 
   return (
     <>
       <div className="border-form">
@@ -368,7 +354,6 @@ const AddThing = (props) => {
               prefix={<BankOutlined />}
               onChange={(e) => {
                 setCompany(e.target.value);
-                console.log(e.target.value);
               }}
               style={{ position: "relative", maxWidth: "100%" }}
             />
@@ -410,9 +395,8 @@ const AddThing = (props) => {
             <InputNumber
               placeholder="กรอกจำนวน"
               addonAfter={suffixSelector()}
-              onChange={(e) => {
-                console.log(e);
-                setCount(e);
+              onChange={(val) => {
+                setCount(val);
               }}
             />
           </Form.Item>
@@ -507,7 +491,7 @@ const AddThing = (props) => {
               <div className="flex-container">
                 <div id="flex-1">จำนวน</div>
                 <div id="flex-2">
-                  {count} {suffix}
+                  {count} {unit.UnitOfMeasure}
                 </div>
               </div>
               <div className="flex-container">
@@ -549,8 +533,9 @@ const AddThing = (props) => {
             />
           </Panel>
         </Collapse>
+
+     
       </div>
-      {console.log(umCode)}
     </>
   );
 };

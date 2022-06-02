@@ -25,7 +25,7 @@ const { Panel } = Collapse;
 
 const TakeOut = (props) => {
   const [serialNum, setSerialNum] = useState("");
-  const [kurupan, setKurupan] = useState("");
+  const [kurupan, setKurupan] = useState("-");
   const [department, setDepartment] = useState({ ID: 0, NAME: "" });
   const [name, setName] = useState({ ID: 0, NAME: "-" });
   const [statusRadio, setStatusRadio] = useState(true);
@@ -128,7 +128,7 @@ const TakeOut = (props) => {
             { SN: res.data[0].SerialNumber, KRP: kurupan },
             ...history,
           ]);
-          setKurupan("");
+          setKurupan("-");
           setSerialNum("");
         });
       } else {
@@ -137,12 +137,7 @@ const TakeOut = (props) => {
     });
   };
 
-  const setEmptyState = () => {
-    setSerialNum("");
-    setKurupan("");
-    setDepartment({});
-    setName({});
-  };
+
 
   const progress = (value) => {
     let TIME = 1;
@@ -212,7 +207,7 @@ const TakeOut = (props) => {
           prefix={<BarcodeOutlined style={{ fontSize: "3rem" }} />}
           onChange={(e) => {
             if (e.target.value.length == 13) {
-              if (kurupan == "" || department.NAME == "" || name.NAME == "") {
+              if ( department.NAME == "" || name.NAME == "") {
                 message.error({
                   content: "กรอกข้อมูลไม่ครบ",
                   style: {
@@ -400,7 +395,7 @@ const TakeOut = (props) => {
 
           {/*INPUTKURUPAN*/}
           <Form.Item
-            name="kurupan"
+            
             label="เลขคุรุภัณฑ์"
             tooltip={{
               title: "ex: 121212",

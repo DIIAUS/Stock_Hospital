@@ -8,6 +8,7 @@ const { Link } = Anchor;
 
 const Report = (props) => {
   const [onhandList, setOnhandList] = useState([]);
+  const [department, setDepartmentList] = useState([]);
   const [transectionWithdaw, setTransectionWithdaw] = useState([]);
   const [transectionDeposit, setTransectionDeposit] = useState([]);
   const [transectionMove, setTransectionMove] = useState([]);
@@ -35,8 +36,11 @@ const Report = (props) => {
         case "transection_move":
           setTransectionMove(res.data);
           break;
+        case "department":
+          setDepartmentList(res.data);
+          break;
 
-        case "":
+        
       }
     });
   };
@@ -72,7 +76,6 @@ const Report = (props) => {
       align: "center",
       width: "2%",
       filters: onhandList.map((e) => {
-        console.log(e.GroupName);
         return { text: e.GroupName, value: e.GroupName };
       }),
       onFilter: (value, record) => record.GroupName.indexOf(value) === 0,
@@ -174,7 +177,7 @@ const Report = (props) => {
       dataIndex: "KurupanNumber",
       align: "center",
       width: "5%",
-      render: (text) => <Tag color="purple">{text}</Tag>
+      render: (text) => <Tag color="purple">{text}</Tag>,
     },
     {
       title: "",
@@ -190,7 +193,12 @@ const Report = (props) => {
       dataIndex: "DepartmentName",
       align: "center",
       width: "6%",
-      render: (text) => <Tag color="geekblue">{text}</Tag>
+      render: (text) => <Tag color="geekblue">{text}</Tag>,
+
+      filters: department.map((e) => {
+        return { text: e.DepartmentName, value: e.DepartmentName };
+      }),
+      onFilter: (value, record) => record.DepartmentName.indexOf(value) === 0,
     },
     {
       title: "วัน/เดือน/ปี ที่เบิก",
@@ -206,7 +214,12 @@ const Report = (props) => {
       dataIndex: "GroupName",
       align: "center",
       width: "5%",
-      render: (text) => <Tag color="orange">{text}</Tag>
+      render: (text) => <Tag color="orange">{text}</Tag>,
+      filters: onhandList.map((e) => {
+        return { text: e.GroupName, value: e.GroupName };
+      }),
+      onFilter: (value, record) => record.GroupName.indexOf(value) === 0,
+      render: (text) => <Tag color="cyan">{text}</Tag>
     },
     {
       title: "ชื่อ-ผู้เบิก",
@@ -287,6 +300,7 @@ const Report = (props) => {
     get_table("all_item");
     get_table("transection_deposit");
     get_table("transection_move");
+    get_table("department");
     props.sendBack("รายงาน");
   }, []);
 

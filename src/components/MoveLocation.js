@@ -94,7 +94,6 @@ const MoveLocation = (props) => {
     setTimeout(() => {
       clearInterval(timer);
       modal.destroy();
-      console.log("mmmmm", value);
       if (value == "success") {
         console.log("YES VALUE IS :", value);
         message.success("เก็บข้อมูลสำเร็จ", 3);
@@ -139,7 +138,6 @@ const MoveLocation = (props) => {
     var time =
       today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var dateTime = date + " " + time;
-    console.log(dateTime);
     return dateTime;
   };
 
@@ -283,10 +281,6 @@ const MoveLocation = (props) => {
         >
           <Form.Item
             label="คลังสินค้า"
-            tooltip={{
-              title: "แผนกปลายทางที่ต้องการนำไปใช้",
-              icon: <InfoCircleOutlined />,
-            }}
           >
             <Select
               placeholder="เลือกคลัง"
@@ -307,10 +301,6 @@ const MoveLocation = (props) => {
 
           <Form.Item
             label="ที่เก็บ"
-            tooltip={{
-              title: "ชื่อผู้เบิกอุปกรณ์",
-              icon: <InfoCircleOutlined />,
-            }}
           >
             <Select
               placeholder="เลือกที่เก็บ"

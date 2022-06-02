@@ -57,23 +57,23 @@ function NavBar(props) {
             <li className="nav-item">
               <NavLink
                 exact
-                to="/out"
-                activeClassName="active"
-                className="nav-links"
-                onClick={() => handleClick()}
-              >
-                {navTitle[1]}
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                exact
                 to="/add"
                 activeClassName="active"
                 className="nav-links"
                 onClick={() => handleClick()}
               >
                 {navTitle[2]}
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                exact
+                to="/out"
+                activeClassName="active"
+                className="nav-links"
+                onClick={() => handleClick()}
+              >
+                {navTitle[1]}
               </NavLink>
             </li>
             <li className="nav-item">
