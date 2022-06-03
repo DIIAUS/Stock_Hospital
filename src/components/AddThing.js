@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import moment from "moment";
 import "./css/AddThing.css";
+
+import GenBarcode from "./GenerateBarcode";
+import { useReactToPrint } from "react-to-print";
 
 import {
   Form,
@@ -28,7 +31,6 @@ import {
 const { Panel } = Collapse;
 
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 const AddThing = (props) => {
   const [serialNum, setSerialNum] = useState("");
@@ -40,6 +42,10 @@ const AddThing = (props) => {
   const [statusRadio, setStatusRadio] = useState(true);
   const [historyStatus, setHistoryStatus] = useState([]);
   const [umCode, setUmCode] = useState([]);
+  const [round, setRound] = useState(0);
+  const [allBarcode, setAllBarcode] = useState([]);
+  const [numberCode, setNumberCode] = useState();
+  const [stateBarcode, setStateBarcode] = useState();
   const [toggle, setToggle] = useState(true);
   const [form] = Form.useForm();
 
@@ -48,6 +54,23 @@ const AddThing = (props) => {
   const [type, setType] = useState([]);
   const [unit, setUnit] = useState([]);
   // GET Databases
+
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+  const genCode = (n) => {
+    let arr = [];
+    let numberCodes = parseInt(numberCode);
+
+    for (let i = 0; i < n; i++) {
+      arr.push(numberCodes++);
+      console.log(numberCodes);
+    }
+    setAllBarcode(arr);
+    setStateBarcode(numberCodes);
+  };
 
   const suffixSelector = () => {
     return (
@@ -80,6 +103,10 @@ const AddThing = (props) => {
           break;
         case "unit_of_measure":
           setUmCode(res.data);
+          break;
+        case "barcode":
+          console.log(res.data[0].code);
+          setNumberCode(res.data[0].code);
           break;
       }
     });
@@ -127,6 +154,12 @@ const AddThing = (props) => {
         form.resetFields();
       }
       progress(res.data);
+    });
+  };
+
+  const updateBarcodeToTable = () => {
+    Axios.post("http://localhost:3001/sendBarcode", {
+      code: stateBarcode,
     });
   };
 
@@ -323,6 +356,13 @@ const AddThing = (props) => {
       render: (tags) => <Tag color="success">รับ</Tag>,
     },
   ];
+  useEffect(() => {
+    genCode(round);
+  }, [round]);
+
+  useEffect(() => {
+    get_table("barcode");
+  }, [toggle]);
 
   useEffect(() => {
     props.sendBack("รับอุปกรณ์");
@@ -330,7 +370,6 @@ const AddThing = (props) => {
     get_table("unit_of_measure");
   }, []);
 
- 
   return (
     <>
       <div className="border-form">
@@ -340,6 +379,31 @@ const AddThing = (props) => {
           className="form-position"
           layout="vertical"
         >
+          <Form.Item label="Generate Barcode :">
+            <InputNumber
+              placeholder="กรอกจำนวน"
+              onChange={(val) => {
+                setRound(val);
+              }}
+              style={{ width: "9rem" }}
+            />
+            <br />
+            <button
+              type="button"
+              className="btn-print-barcode"
+              onClick={() => {
+                updateBarcodeToTable();
+                setToggle(!toggle);
+                handlePrint();
+              }}
+            >
+              ออกบาร์โค๊ด
+            </button>
+
+            <div style={{ display: "none" }}>
+              <GenBarcode ref={componentRef} allBarcode={allBarcode} />
+            </div>
+          </Form.Item>
           <Form.Item
             // name="cmpn"
             label="บริษัท"
@@ -533,8 +597,6 @@ const AddThing = (props) => {
             />
           </Panel>
         </Collapse>
-
-     
       </div>
     </>
   );

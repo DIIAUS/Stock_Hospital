@@ -3,7 +3,6 @@ const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
 
-
 app.use(cors());
 app.use(express.json());
 
@@ -100,7 +99,7 @@ app.get("/:tablename", (req, res) => {
         }
       }
     );
-  }else if (tablename === "all_item") {
+  } else if (tablename === "all_item") {
     db.query(
       "SELECT SerialNumber, item_group.GroupName , DeviceOfCompany ,onhand FROM item INNER JOIN item_group ON item_group.GroupID=item.GroupID ORDER BY FristDate DESC; ",
       (err, result) => {
@@ -111,7 +110,7 @@ app.get("/:tablename", (req, res) => {
         }
       }
     );
-  }else if (tablename === "transection_deposit") {
+  } else if (tablename === "transection_deposit") {
     db.query(
       "SELECT SerialNumber,TypeID ,Date, item_group.GroupName , DeviceOfCompany , store.StoreName , location.LocName FROM transaction INNER JOIN store ON transaction.StoreID=store.StoreID INNER JOIN location ON transaction.LocID=location.LocID INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN person ON transaction.PersonID = person.Id WHERE TypeID='R' ORDER BY transaction.Id DESC;",
       (err, result) => {
@@ -122,7 +121,7 @@ app.get("/:tablename", (req, res) => {
         }
       }
     );
-  }else if (tablename === "transection_move") {
+  } else if (tablename === "transection_move") {
     db.query(
       "SELECT SerialNumber,TypeID ,Date, item_group.GroupName , store.StoreName , location.LocName FROM transaction INNER JOIN store ON (transaction.ToStoreID=store.StoreID) INNER JOIN location ON transaction.ToLocID=location.LocID INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN person ON transaction.PersonID = person.Id WHERE TypeID='T' ORDER BY transaction.Id DESC; ",
       (err, result) => {
@@ -133,10 +132,7 @@ app.get("/:tablename", (req, res) => {
         }
       }
     );
-  }
-   
-  
-  else {
+  } else {
     db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
@@ -297,6 +293,19 @@ app.post("/regis", (req, res) => {
       }
     }
   );
+});
+
+app.post("/sendBarcode", (req, res) => {
+  const code = req.body.code;
+  db.query("UPDATE barcode SET code=? WHERE id=1", [code], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.send(err.sqlMessage);
+    } else {
+      res.send("success");
+      console.log("update Barcode successfully");
+    }
+  });
 });
 
 app.listen("3001", () => {

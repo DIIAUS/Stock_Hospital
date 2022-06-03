@@ -6,8 +6,7 @@ import NavBar from "./components/NavBar";
 import Login from "./components/Login";
 import TackOut from "./components/TakeOut";
 import Report from "./components/Report";
-import Register from "./components/Register"
-
+import Register from "./components/Register";
 
 import { Route, Switch } from "react-router-dom";
 
@@ -23,8 +22,8 @@ const style = {
   color: "#fff",
   textAlign: "center",
   fontSize: "1rem",
-  top:"70%",
-  left:"100%"
+  top: "70%",
+  left: "100%",
 };
 
 function App() {
@@ -34,9 +33,9 @@ function App() {
     return initialValue || "";
   });
 
-  const [navs,setNavs] =useState();
-  const [register,setRegister] = useState(false);
-  const [userData,setUserData] =  useState(() => {
+  const [navs, setNavs] = useState();
+  const [register, setRegister] = useState(false);
+  const [userData, setUserData] = useState(() => {
     const saved = localStorage.getItem("USDATA");
     const initialValue = JSON.parse(saved);
     return initialValue || "";
@@ -48,24 +47,25 @@ function App() {
   });
 
   if (token) {
-    if (register){
-      return(
+    if (register) {
+      return (
         <div>
-          <Register regis={res=>setRegister(res)}/>
+          <Register regis={(res) => setRegister(res)} />
         </div>
-      )
-    }else{
+      );
+    } else {
       return (
         <div>
           {console.log(token)}
-          <Login changeWord={(word) => setToken(word)} userData={(data)=>setUserData(data)} regis={res=>setRegister(res)}/>
+          <Login
+            changeWord={(word) => setToken(word)}
+            userData={(data) => setUserData(data)}
+            regis={(res) => setRegister(res)}
+          />
         </div>
       );
     }
   }
-
-
-  
 
   return (
     <>
@@ -77,21 +77,26 @@ function App() {
          */}
 
         <div>
-          <NavBar changeWord={(token) => setToken(token)} statusPage={navs} userdata={userData} sendBack={(data)=>setUserData(data)}/>
+          <NavBar
+            changeWord={(token) => setToken(token)}
+            statusPage={navs}
+            userdata={userData}
+            sendBack={(data) => setUserData(data)}
+          />
           <Route exact path="/">
-            <Report sendBack={(name) => setNavs(name)}/>
+            <Report sendBack={(name) => setNavs(name)} />
           </Route>
 
           <Route path="/add">
-            <AddThings sendBack={(name) => setNavs(name)}/>
+            <AddThings sendBack={(name) => setNavs(name)} />
           </Route>
 
           <Route path="/out">
-            <TackOut sendBack={(name) => setNavs(name)}/>
+            <TackOut sendBack={(name) => setNavs(name)} />
           </Route>
 
           <Route path="/mov">
-            <MoveLoc sendBack={(name) => setNavs(name)}/>
+            <MoveLoc sendBack={(name) => setNavs(name)} />
           </Route>
           <BackTop visibilityHeight="10">
             <div style={style}>UP</div>
