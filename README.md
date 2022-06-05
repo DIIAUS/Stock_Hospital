@@ -73,4 +73,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ## requirement
 
-*   [nodejs](https://nodejs.org/en/download/)
+*   [nodejs](https://nodejs.org/en/download/) >= v17.3.0
+
+## download file
+
+*   $ git clone [https://github.com/DIIAUS/Stock_Hospital.git](https://github.com/DIIAUS/Stock_Hospital.git)
+
+          or
+
+*   download with .zip
