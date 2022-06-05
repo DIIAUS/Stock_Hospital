@@ -77,7 +77,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ## download file
 
-*   $ git clone [https://github.com/DIIAUS/Stock_Hospital.git](https://github.com/DIIAUS/Stock_Hospital.git)
+`$ git clone [https://github.com/DIIAUS/Stock_Hospital.git](https://github.com/DIIAUS/Stock_Hospital.git)`
 
           or
 
