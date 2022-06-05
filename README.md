@@ -83,4 +83,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 # Install Dependencies
 *  Open to project Folder  `ex: cd D:/Stock_Hospital` 
-*  Open command proms (windows) or terminal (unix) type : `npm install`
+*  Open command proms (windows) or terminal (unix)  and type : `npm install`  Wait for install Dependencies :grin:
+Now !!! you have Dependencies  please check folder `nodeModule` in project folder  
