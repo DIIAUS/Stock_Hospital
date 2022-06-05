@@ -77,6 +77,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ## Rownload file
 #### Download with command
-    git clone [https://github.com/DIIAUS/Stock_Hospital.git](https://github.com/DIIAUS/Stock_Hospital.git)
+    git clone https://github.com/DIIAUS/Stock_Hospital.git
 #### Download with .zip
 ![](https://cdn.discordapp.com/attachments/896042023612743761/982968496830939177/unknown.png)
