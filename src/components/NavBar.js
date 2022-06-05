@@ -10,12 +10,14 @@ function NavBar(props) {
   const handleClick = () => {
     setClick(!click);
   };
-  const navTitle = [
-    "รายงาน",
-    "เบิกอุปกรณ์",
-    "รับอุปกรณ์",
-    "เคลื่อนย้ายอุปกรณ์",
-  ];
+
+   const navMenu = [
+                    {Line : "/" , Name : "รายงาน"},
+                    {Line : "/" , Name : "ยืม/คืน อุปกรณ์"},
+                    {Line : "/add" , Name : "รับอุปกรณ์"},
+                    {Line : "/out" , Name : "เบิกอุปกรณ์"},
+                    {Line : "/mov" , Name : "เคลื่อนย้ายอุปกรณ์"},
+  ]
 
   const content = (
     <div>
@@ -43,7 +45,22 @@ function NavBar(props) {
           </NavLink>
 
           <ul className={click ? "nav-menu active" : "nav-menu"}>
-            <li className="nav-item">
+            {navMenu.map((e)=>{
+              return (
+                <li className="nav-item">
+                  <NavLink
+                    exact
+                    to={e.Line}
+                    activeClassName="active"
+                    className="nav-links"
+                    onClick={() => handleClick()}
+                  >
+                    {e.Name}
+                  </NavLink>
+                </li>
+              )
+            })}
+            {/* <li className="nav-item">
               <NavLink
                 exact
                 to="/"
@@ -86,16 +103,11 @@ function NavBar(props) {
               >
                 {navTitle[3]}
               </NavLink>
-            </li>
+            </li> */}
 
             <li className="nav-links">
               
               <Popover content={content} title="ข้อมูลผู้ใช้" trigger="click" placement="bottomRight">
-                {/* <button
-                  className="user-btn"
-                  type="button"
-                  
-                ><UserOutlined style={{marginRight:"10px"}}/>User</button> */}
                 <Avatar size={46} style={{
                   color: '#f56a00',
                   backgroundColor: '#fde3cf',
