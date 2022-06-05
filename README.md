@@ -77,11 +77,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ## Download file
 #### Download with command
-    git clone https://github.com/DIIAUS/Stock_Hospital.git
+    $ git clone https://github.com/DIIAUS/Stock_Hospital.git
 #### Download with .zip
 ![](https://cdn.discordapp.com/attachments/896042023612743761/982968496830939177/unknown.png)
 
 # Install Dependencies
-*  Open to project Folder  `ex: cd D:/Stock_Hospital` 
+*  Open to project Folder  `ex: $ cd YOUR_PATH/Stock_Hospital` 
 *  Open command proms (windows) or terminal (unix)  and type : `npm install`  Wait for install Dependencies :grin:
-Now !!! you have Dependencies  please check folder `nodeModule` in project folder  
+*  Now !!! Please check folder `nodeModule` in project folder
+*  type in terminal
+
+# Open Project
+#### Open Front-End
+    $ npm start
+this project run on port :3000  `http://localhost:3000/`
