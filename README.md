@@ -71,14 +71,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 # How to Install Project
 
-## requirement
+## Requirement
 
 *   [nodejs](https://nodejs.org/en/download/) >= v17.3.0
 
-## download file
-### download with command
+## Rownload file
+#### Download with command
     git clone [https://github.com/DIIAUS/Stock_Hospital.git](https://github.com/DIIAUS/Stock_Hospital.git)
-
-
-
-*   download with .zip
+#### Download with .zip
+![](https://cdn.discordapp.com/attachments/896042023612743761/982968496830939177/unknown.png)
