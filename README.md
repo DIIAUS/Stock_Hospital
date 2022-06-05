@@ -5,6 +5,8 @@
 ## Requirement
 
 *   [nodejs](https://nodejs.org/en/download/) >= v17.3.0
+*   Apache server
+*   MySql
 
 ## Download file
 #### Download with command
