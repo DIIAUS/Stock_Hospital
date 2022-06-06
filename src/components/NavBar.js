@@ -13,7 +13,7 @@ function NavBar(props) {
 
    const navMenu = [
                     {Line : "/" , Name : "รายงาน"},
-                    {Line : "/" , Name : "ยืม/คืน อุปกรณ์"},
+                    {Line : "/loan" , Name : "ยืม/คืน อุปกรณ์"},
                     {Line : "/add" , Name : "รับอุปกรณ์"},
                     {Line : "/out" , Name : "เบิกอุปกรณ์"},
                     {Line : "/mov" , Name : "เคลื่อนย้ายอุปกรณ์"},

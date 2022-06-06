@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import TackOut from "./components/TakeOut";
 import Report from "./components/Report";
 import Register from "./components/Register";
+import Loan from "./components/Loan"
 
 import { Route, Switch } from "react-router-dom";
 
@@ -98,6 +99,12 @@ function App() {
           <Route path="/mov">
             <MoveLoc sendBack={(name) => setNavs(name)} />
           </Route>
+
+          <Route path="/loan">
+            <Loan sendBack={(name) => setNavs(name)} />
+          </Route>
+
+
           <BackTop visibilityHeight="10">
             <div style={style}>UP</div>
           </BackTop>
