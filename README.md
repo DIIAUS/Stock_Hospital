@@ -1,70 +1,34 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# How to Install Project
 
-In the project directory, you can run:
+## Requirement
 
-### `npm start`
+*   [nodejs](https://nodejs.org/en/download/) >= v17.3.0
+*   Apache server
+*   MySql
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Download file
+#### Download with command
+    $ git clone https://github.com/DIIAUS/Stock_Hospital.git
+#### Download with .zip
+![](https://cdn.discordapp.com/attachments/896042023612743761/982968496830939177/unknown.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# Install Dependencies
+*  Open to project Folder  `ex: $ cd YOUR_PATH/Stock_Hospital` 
+*  Open command proms (windows) or terminal (unix)  and type : `npm install`  Wait for install Dependencies :grin:
+*  Now !!! Please check folder `nodeModule` in project folder
+*  type in terminal
 
-### `npm test`
+# Open Project
+### Open Front-End
+   ##### Type in terminal .../Stock_Hospital/`npm start` 
+    $ npm start
+this project run on port : 3000  you can open `http://localhost:3000/` or `http://LOCAL_IP_ADDRESS:3000/`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Open Back-End
+   ##### Type in terminal .../Stock_Hospital/`cd server`
+    $ cd server
+   ##### Type in terminal .../Stock_Hospital/server/`npm run dev`
+    $ npm run dev
+back-end run on port : 3001 you can open `http://localhost:3001/` or `http://LOCAL_IP_ADDRESS:3001/`
