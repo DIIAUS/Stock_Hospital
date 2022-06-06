@@ -96,7 +96,7 @@ const AddThing = (props) => {
   };
 
   const get_table = (tablename) => {
-    Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
+    Axios.get(`http://192.168.83.202:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "item_group":
           setGroup(res.data);
@@ -114,7 +114,7 @@ const AddThing = (props) => {
 
   const send_table = (serialNumberParam) => {
     setSerialNum(serialNumberParam);
-    Axios.post("http://localhost:3001/add_item", {
+    Axios.post("http://192.168.83.202:3001/add_item", {
       SerialNumber: serialNumberParam,
       GroupID: type.GroupID,
       DeviceOfCompany: company,
@@ -133,7 +133,7 @@ const AddThing = (props) => {
       TypeID: "R",
     }).then((res) => {
       if (res.data == "success") {
-        Axios.post("http://localhost:3001/add_item_transection", {
+        Axios.post("http://192.168.83.202:3001/add_item_transection", {
           SerialNumber: serialNumberParam,
           GroupID: type.GroupID,
           DeviceOfCompany: company,
@@ -158,7 +158,7 @@ const AddThing = (props) => {
   };
 
   const updateBarcodeToTable = () => {
-    Axios.post("http://localhost:3001/sendBarcode", {
+    Axios.post("http://192.168.83.202:3001/sendBarcode", {
       code: stateBarcode,
     });
   };

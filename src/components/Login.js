@@ -24,7 +24,7 @@ const Login = (props) => {
 
   useEffect(() => {
     // getTable();
-    Axios.post(`http://localhost:3001/login`).then((res) => {
+    Axios.post(`http://192.168.83.202:3001/login`).then((res) => {
       setLoginTable(res.data);
     });
   }, []);

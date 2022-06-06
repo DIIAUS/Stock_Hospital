@@ -12,7 +12,7 @@ function NavBar(props) {
   };
 
    const navMenu = [
-                    {Line : "/" , Name : "รายงาน"},
+                    {Line : "/stockReport" , Name : "รายงาน"},
                     {Line : "/loan" , Name : "ยืม/คืน อุปกรณ์"},
                     {Line : "/add" , Name : "รับอุปกรณ์"},
                     {Line : "/out" , Name : "เบิกอุปกรณ์"},
@@ -22,7 +22,7 @@ function NavBar(props) {
   const content = (
     <div>
       <p>{`ชื่อผู้ใช้ : ${props.userdata.FristName} ${props.userdata.LastName}`}</p>
-      <NavLink exact to="/" activeClassName="active">
+      <NavLink exact to="/stockReport" activeClassName="active">
         <button
           className="logout-btn"
           type="button"

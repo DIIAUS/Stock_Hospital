@@ -84,7 +84,7 @@ function App() {
             userdata={userData}
             sendBack={(data) => setUserData(data)}
           />
-          <Route exact path="/">
+          <Route exact path="/stockReport">
             <Report sendBack={(name) => setNavs(name)} />
           </Route>
 

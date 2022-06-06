@@ -70,7 +70,7 @@ const TakeOut = (props) => {
   }, []);
 
   const get_table = (tablename) => {
-    Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
+    Axios.get(`http://192.168.83.202:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "onhand":
           setOnhandList(res.data);
@@ -98,19 +98,19 @@ const TakeOut = (props) => {
   const send_table = (serialNumberParam) => {
     setSerialNum(serialNumberParam);
     setKurupan(kurupan);
-    Axios.post("http://localhost:3001/send_item", {
+    Axios.post("http://192.168.83.202:3001/send_item", {
       SerialNumber: serialNumberParam,
     }).then((res) => {
       console.log(res.data[0]);
       // console.log(res.data);
       if (res.data[0]) {
-        Axios.post("http://localhost:3001/out_item", {
+        Axios.post("http://192.168.83.202:3001/out_item", {
           SerialNumber: res.data[0].SerialNumber,
         }).then((res) => {
           progress(res.data);
         });
 
-        Axios.post("http://localhost:3001/out_item_transection", {
+        Axios.post("http://192.168.83.202:3001/out_item_transection", {
           SerialNumber: res.data[0].SerialNumber,
           KurupanNumber: kurupan,
           GroupID: res.data[0].GroupID,

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Steps,Form} from "antd";
 const { Step } = Steps;
 
-const Loan = (props) => {
-    
+const Loan = (props) => {   
     const StyleSheet ={ 
         BorderCss: {border: "1px solid black", padding: "20px 0"} ,
         DivCss : { border: "3px solid black" }
@@ -14,6 +13,7 @@ const Loan = (props) => {
   });
   return (
     <div>
+      <h1>ยังไม่เสร็จ</h1>
       <Steps current={2} percent={100}>
         <Step title="ยืม" description="12-06-2563" />
         <Step

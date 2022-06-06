@@ -20,7 +20,7 @@ const Receive = (props) => {
   const [form] = Form.useForm();
 
   const send_table = () => {
-    Axios.post("http://localhost:3001/regis", {
+    Axios.post("http://192.168.83.202:3001/regis", {
       UserID: username,
       Password: passwd,
       FristName: fname,

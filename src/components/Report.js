@@ -15,7 +15,7 @@ const Report = (props) => {
   const [allItem, setAllItem] = useState([]);
 
   const get_table = (tablename) => {
-    Axios.get(`http://localhost:3001/${tablename}`).then((res) => {
+    Axios.get(`http://192.168.83.202:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "onhand":
           setOnhandList(res.data);
