@@ -7,31 +7,24 @@ import Login from "./components/Login";
 import TackOut from "./components/TakeOut";
 import Report from "./components/Report";
 import Register from "./components/Register";
-import Loan from "./components/Loan"
+import Loan from "./components/Loan";
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
 
 import { BackTop } from "antd";
+import { ToTopOutlined } from "@ant-design/icons";
 
-const style = {
-  position: "absolute",
-  height: 50,
-  width: 50,
-  lineHeight: "50px",
-  borderRadius: 50,
-  backgroundColor: "#1088e9",
-  color: "#fff",
-  textAlign: "center",
-  fontSize: "1rem",
-  top: "70%",
-  left: "100%",
-};
+//  Config APP
+const ServerHose = "192.168.42.221";
+const setTimeOut = 180; //minute
+//  Config APP
 
 function App() {
+
   const [token, setToken] = useState(() => {
     const saved = localStorage.getItem("TOKEN");
     const initialValue = JSON.parse(saved);
-    return initialValue || "";
+    return initialValue;
   });
 
   const [navs, setNavs] = useState();
@@ -47,11 +40,87 @@ function App() {
     localStorage.setItem("USDATA", JSON.stringify(userData));
   });
 
+  useEffect(() => {
+    if (token === true) {
+      const timer = setTimeout(() => {
+        setToken(false);
+        localStorage.setItem("TOKEN", JSON.stringify(false));
+        localStorage.setItem("USDATA", JSON.stringify(""));
+        console.log("This will run after 1 second!");
+        alert("Time out - Please login");
+      }, setTimeOut * 60000);
+      return () => clearTimeout(timer);
+    }
+  }, [token]);
+
+
+
+  
+
   if (token) {
+    return (
+      <>
+        <BrowserRouter>
+          <Switch>
+            <div>
+              <NavBar
+                changeWord={(token) => setToken(token)}
+                statusPage={navs}
+                userdata={userData}
+                sendBack={(data) => setUserData(data)}
+              />
+              <Route path="/stockReport">
+                <Report
+                  sendBack={(name) => setNavs(name)}
+                  ServerHose={ServerHose}
+                />
+              </Route>
+
+              <Route path="/add">
+                <AddThings
+                  sendBack={(name) => setNavs(name)}
+                  ServerHose={ServerHose}
+                />
+              </Route>
+
+              <Route path="/out">
+                <TackOut
+                  sendBack={(name) => setNavs(name)}
+                  ServerHose={ServerHose}
+                />
+              </Route>
+
+              <Route path="/mov">
+                <MoveLoc
+                  sendBack={(name) => setNavs(name)}
+                  ServerHose={ServerHose}
+                />
+              </Route>
+
+              <Route path="/loan">
+                <Loan
+                  sendBack={(name) => setNavs(name)}
+                  ServerHose={ServerHose}
+                />
+              </Route>
+
+              <Redirect exact from="/" to="add" />
+
+              <BackTop visibilityHeight="10">
+                <div className="btn-to-top">
+                  <ToTopOutlined style={{ fontSize: "26px" }} />
+                </div>
+              </BackTop>
+            </div>
+          </Switch>
+        </BrowserRouter>
+      </>
+    );
+  } else {
     if (register) {
       return (
         <div>
-          <Register regis={(res) => setRegister(res)} />
+          <Register regis={(res) => setRegister(res)} ServerHose={ServerHose} />
         </div>
       );
     } else {
@@ -62,56 +131,12 @@ function App() {
             changeWord={(word) => setToken(word)}
             userData={(data) => setUserData(data)}
             regis={(res) => setRegister(res)}
+            ServerHose={ServerHose}
           />
         </div>
       );
     }
   }
-
-  return (
-    <>
-      {/* {console.log("USEDNAME",userData.FristName)} */}
-      <Switch>
-        {/* <Route exact path="/">
-            <Login />
-          </Route>
-         */}
-
-        <div>
-          <NavBar
-            changeWord={(token) => setToken(token)}
-            statusPage={navs}
-            userdata={userData}
-            sendBack={(data) => setUserData(data)}
-          />
-          <Route exact path="/stockReport">
-            <Report sendBack={(name) => setNavs(name)} />
-          </Route>
-
-          <Route path="/add">
-            <AddThings sendBack={(name) => setNavs(name)} />
-          </Route>
-
-          <Route path="/out">
-            <TackOut sendBack={(name) => setNavs(name)} />
-          </Route>
-
-          <Route path="/mov">
-            <MoveLoc sendBack={(name) => setNavs(name)} />
-          </Route>
-
-          <Route path="/loan">
-            <Loan sendBack={(name) => setNavs(name)} />
-          </Route>
-
-
-          <BackTop visibilityHeight="10">
-            <div style={style}>UP</div>
-          </BackTop>
-        </div>
-      </Switch>
-    </>
-  );
 }
 
 export default App;

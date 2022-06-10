@@ -37,7 +37,7 @@ const MoveLocation = (props) => {
   //Database
 
   const get_table = (tablename) => {
-    Axios.get(`http://192.168.83.202:3001/${tablename}`).then((res) => {
+    Axios.get(`http://${props.ServerHose}:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "store":
           setTableStore(res.data);
@@ -52,12 +52,12 @@ const MoveLocation = (props) => {
 
   const send_table = (serialNumberParam) => {
     setSerialNum(serialNumberParam);
-    Axios.post("http://192.168.83.202:3001/send_item", {
+    Axios.post(`http://${props.ServerHose}:3001/send_item`, {
       SerialNumber: serialNumberParam,
     }).then((res) => {
       console.log(res.data[0]);
       if (res.data[0]) {
-        Axios.post("http://192.168.83.202:3001/move_loc", {
+        Axios.post(`http://${props.ServerHose}:3001/move_loc`, {
           SerialNumber: serialNumberParam,
           ToStoreID: store.StoreID,
           ToLocID: targetStore.LocID,

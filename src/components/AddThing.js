@@ -96,7 +96,7 @@ const AddThing = (props) => {
   };
 
   const get_table = (tablename) => {
-    Axios.get(`http://192.168.83.202:3001/${tablename}`).then((res) => {
+    Axios.get(`http://${props.ServerHose}:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "item_group":
           setGroup(res.data);
@@ -114,7 +114,7 @@ const AddThing = (props) => {
 
   const send_table = (serialNumberParam) => {
     setSerialNum(serialNumberParam);
-    Axios.post("http://192.168.83.202:3001/add_item", {
+    Axios.post(`http://${props.ServerHose}:3001/add_item`, {
       SerialNumber: serialNumberParam,
       GroupID: type.GroupID,
       DeviceOfCompany: company,
@@ -133,7 +133,7 @@ const AddThing = (props) => {
       TypeID: "R",
     }).then((res) => {
       if (res.data == "success") {
-        Axios.post("http://192.168.83.202:3001/add_item_transection", {
+        Axios.post(`http://${props.ServerHose}:3001/add_item_transection`, {
           SerialNumber: serialNumberParam,
           GroupID: type.GroupID,
           DeviceOfCompany: company,
@@ -158,7 +158,7 @@ const AddThing = (props) => {
   };
 
   const updateBarcodeToTable = () => {
-    Axios.post("http://192.168.83.202:3001/sendBarcode", {
+    Axios.post(`http://${props.ServerHose}:3001/sendBarcode`,{
       code: stateBarcode,
     });
   };
@@ -424,7 +424,6 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            // name="group"
             label="Group"
             rules={[{ required: true, message: "กรุณากรอก Group Items" }]}
           >
@@ -447,7 +446,6 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            // name="sum"
             label="จำนวน"
             rules={[
               {
@@ -466,7 +464,6 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            // name="date"
             label="วันที่กระทำกับสินค้า"
             rules={[{ required: true, message: "กรุณากรอกวันที่และเวลา" }]}
           >

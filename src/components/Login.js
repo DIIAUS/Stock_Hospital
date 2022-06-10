@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import { NavLink } from "react-router-dom";
 import { Card, Form, Input, Layout, message } from "antd";
 import { Content, Footer } from "antd/lib/layout/layout";
 import "./css/Login.css";
@@ -24,7 +23,7 @@ const Login = (props) => {
 
   useEffect(() => {
     // getTable();
-    Axios.post(`http://192.168.83.202:3001/login`).then((res) => {
+    Axios.post(`http://${props.ServerHose}:3001/login`).then((res) => {
       setLoginTable(res.data);
     });
   }, []);
@@ -42,11 +41,11 @@ const Login = (props) => {
     loginTable.map(({ UserID, Password, FristName, LastName }) => {
       const tableUser = { UserID: `${UserID}`, Password: `${Password}` };
       // console.log(tableUser);
-      if (JSON.stringify(inputUser) == JSON.stringify(tableUser)) {
+      if (JSON.stringify(inputUser) === JSON.stringify(tableUser)) {
         const nameUser = { FristName: `${FristName}`, LastName: `${LastName}` };
         console.log(true);
         props.userData(nameUser);
-        props.changeWord(false);
+        props.changeWord(true);
         token = true;
       }
     });
@@ -62,15 +61,15 @@ const Login = (props) => {
 
   return (
     <Layout>
-      <button
+      {/* <button
         style={{ background: "red" }}
         onClick={(e) => {
-          props.changeWord(false);
+          props.changeWord(true);
           props.userData({ FristName: "JOE", LastName: "DIIUAS" });
         }}
       >
         Admin Login
-      </button>
+      </button> */}
       <Content>
         <div className="body">
           <div className="card-form">

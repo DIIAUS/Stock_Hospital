@@ -132,7 +132,18 @@ app.get("/:tablename", (req, res) => {
         }
       }
     );
-  } else {
+  }else if (tablename === "loan_Item") {
+    db.query(
+      "SELECT KurupanNumber ,Name , LoanDate ,  department.DepartmentName , Status FROM loan_Item INNER JOIN department ON (department.DepartmentID=loan_Item.DepartmentID) ORDER BY loan_Item.idx DESC;",
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  }else {
     db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
@@ -171,6 +182,35 @@ app.post("/add_item", (req, res) => {
         // console.log(result);
         res.send("success");
         console.log("add item successfully");
+      }
+    }
+  );
+});
+
+app.post("/sendLoan", (req, res) => {
+  const KurupanNumber = req.body.KurupanNumber;
+  const Name = req.body.Name;
+  const LoanDate = req.body.Date;
+  const DepartmentID = req.body.Department;
+  const Status = 1;
+
+  db.query(
+    "INSERT INTO loan_Item (KurupanNumber,Name,LoanDate,DepartmentID,Status) VALUES(?,?,?,?,?)",
+    [
+      KurupanNumber,
+      Name,
+      LoanDate,
+      DepartmentID,
+      Status
+    ],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(err.sqlMessage);
+      } else {
+        // console.log(result);
+        res.send("success");
+        console.log("add loan successfully");
       }
     }
   );
@@ -307,6 +347,21 @@ app.post("/sendBarcode", (req, res) => {
     }
   });
 });
+
+app.post("/returnItem", (req,res)=>{
+  const KurupanNumber = req.body.KurupanNumber;
+  db.query("DELETE FROM loan_Item WHERE KurupanNumber=?",
+  [KurupanNumber],
+  (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send("success");
+      console.log("return item successfully");
+    }
+  }
+  )
+})
 
 app.listen("3001", () => {
   console.log("Server is running on port 3001");

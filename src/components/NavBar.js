@@ -12,22 +12,22 @@ function NavBar(props) {
   };
 
    const navMenu = [
-                    {Line : "/stockReport" , Name : "รายงาน"},
-                    {Line : "/loan" , Name : "ยืม/คืน อุปกรณ์"},
-                    {Line : "/add" , Name : "รับอุปกรณ์"},
-                    {Line : "/out" , Name : "เบิกอุปกรณ์"},
-                    {Line : "/mov" , Name : "เคลื่อนย้ายอุปกรณ์"},
+     {Line : "/add" , Name : "รับอุปกรณ์"},
+     {Line : "/out" , Name : "เบิกอุปกรณ์"},
+     {Line : "/loan" , Name : "ยืม/คืน อุปกรณ์"},
+     {Line : "/mov" , Name : "เคลื่อนย้ายอุปกรณ์"},
+     {Line : "/stockReport" , Name : "รายงาน"},
   ]
 
   const content = (
     <div>
       <p>{`ชื่อผู้ใช้ : ${props.userdata.FristName} ${props.userdata.LastName}`}</p>
-      <NavLink exact to="/stockReport" activeClassName="active">
+      <NavLink exact to="/add" activeClassName="active">
         <button
           className="logout-btn"
           type="button"
           onClick={() => {
-            props.changeWord(true);
+            props.changeWord(false);
             props.sendBack({FristName:"", LastName:""})
           }}
          
@@ -39,7 +39,7 @@ function NavBar(props) {
     <>
       <nav className="navbar">
         <div className="nav-container">
-          <NavLink exact to="/" className="nav-logo">
+          <NavLink exact to="/stockReport" className="nav-logo">
           <img src={Logos} width="60" height="60" alt=""/>
             Chonburi Hospital
           </NavLink>

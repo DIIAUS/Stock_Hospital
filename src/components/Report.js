@@ -15,7 +15,7 @@ const Report = (props) => {
   const [allItem, setAllItem] = useState([]);
 
   const get_table = (tablename) => {
-    Axios.get(`http://192.168.83.202:3001/${tablename}`).then((res) => {
+    Axios.get(`http://${props.ServerHose}:3001/${tablename}`).then((res) => {
       switch (tablename) {
         case "onhand":
           setOnhandList(res.data);
@@ -327,12 +327,14 @@ const Report = (props) => {
           </div>
           <div class="flex-item-right">
             <h3>อุปกรณ์ทั้งหมด</h3>
-            <Table
-              columns={allItemColumn}
-              dataSource={allItem}
-              bordered
-              scroll={{ y: 500, x: 500 }}
-            />
+           
+              <Table
+                columns={allItemColumn}
+                dataSource={allItem}
+                bordered
+                scroll={{ y: 500, x: 500 }}
+              />
+            
           </div>
         </div>
 

@@ -50,13 +50,14 @@
   }
 
   .anchor{
-    display:inline-flex;
+    display:inline-block;
     margin-left:2%;
   }
 
   .anchor a{
     margin-right: 5rem;
     color:rgb(30, 111, 131);
+    font-size: 1rem;
   }
 
   @media (max-width: 800px) {
@@ -76,5 +77,10 @@
 
       .border-report-form{
         height: auto;
+      }
+
+      .anchor{
+        display:inline-grid;
+        margin-left:2%;
       }
   }

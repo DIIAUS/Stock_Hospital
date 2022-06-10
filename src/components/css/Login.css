@@ -81,8 +81,8 @@ Footer {
   .card-form{
     position: absolute;
     top: 12%;
-    left: 5%;
-    width: 90%;
+ 
+    display: flex;
   }
 
   .login-form{
@@ -105,4 +105,4 @@ Footer {
     font-size: 1.2rem;
     
   }
-}
+} 
