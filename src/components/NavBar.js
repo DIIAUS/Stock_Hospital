@@ -15,6 +15,7 @@ function NavBar(props) {
      {Line : "/add" , Name : "รับอุปกรณ์"},
      {Line : "/out" , Name : "เบิกอุปกรณ์"},
      {Line : "/loan" , Name : "ยืม/คืน อุปกรณ์"},
+     {Line : "/kurupancheck", Name: "อัพเดทคุรุภัณฑ์"},
      {Line : "/mov" , Name : "เคลื่อนย้ายอุปกรณ์"},
      {Line : "/stockReport" , Name : "รายงาน"},
   ]

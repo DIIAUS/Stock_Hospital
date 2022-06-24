@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import { Table ,Tag, Anchor} from "antd";
+import { Table, Tag, Anchor } from "antd";
 import "./css/Report.css";
-
 
 const { Link } = Anchor;
 
@@ -12,6 +11,7 @@ const Report = (props) => {
   const [transectionWithdaw, setTransectionWithdaw] = useState([]);
   const [transectionDeposit, setTransectionDeposit] = useState([]);
   const [transectionMove, setTransectionMove] = useState([]);
+  const [updateKurupan, setUpdateKurupan] = useState([]);
   const [allItem, setAllItem] = useState([]);
 
   const get_table = (tablename) => {
@@ -39,8 +39,9 @@ const Report = (props) => {
         case "department":
           setDepartmentList(res.data);
           break;
-
-        
+        case "updateKurupan":
+          setUpdateKurupan(res.data);
+          break;
       }
     });
   };
@@ -50,14 +51,14 @@ const Report = (props) => {
       title: "อุปกรณ์",
       dataIndex: "GroupName",
       align: "center",
-      render: (text) => <Tag color="blue">{text}</Tag>
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: "จำนวน",
       className: "column-sum",
       dataIndex: "Onhand",
       align: "center",
-      render: (text) => <Tag color="red">{text}</Tag>
+      render: (text) => <Tag color="red">{text}</Tag>,
     },
   ];
 
@@ -68,7 +69,7 @@ const Report = (props) => {
       align: "center",
       fixed: "left",
       width: "2%",
-      render: (text) => <Tag color="blue">{text}</Tag>
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: "ประเภท",
@@ -79,21 +80,21 @@ const Report = (props) => {
         return { text: e.GroupName, value: e.GroupName };
       }),
       onFilter: (value, record) => record.GroupName.indexOf(value) === 0,
-      render: (text) => <Tag color="cyan">{text}</Tag>
+      render: (text) => <Tag color="cyan">{text}</Tag>,
     },
     {
       title: "รับจากบริษัท",
       dataIndex: "DeviceOfCompany",
       align: "center",
       width: "4%",
-      render: (text) => <Tag color="orange">{text}</Tag>
+      render: (text) => <Tag color="orange">{text}</Tag>,
     },
     {
       title: "จำนวน",
       dataIndex: "onhand",
       align: "center",
       width: "1%",
-      render: (text) => <Tag color="#f50">{text}</Tag>
+      render: (text) => <Tag color="#f50">{text}</Tag>,
     },
   ];
 
@@ -104,7 +105,7 @@ const Report = (props) => {
       align: "center",
       fixed: "left",
       width: "4%",
-      render: (text) => <Tag color="blue">{text}</Tag>
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: "",
@@ -112,7 +113,7 @@ const Report = (props) => {
       dataIndex: "TypeID",
       align: "center",
       width: "2%",
-      render: (text) => <Tag color="green">{text}</Tag>
+      render: (text) => <Tag color="green">{text}</Tag>,
     },
 
     {
@@ -121,7 +122,7 @@ const Report = (props) => {
       dataIndex: "Date",
       align: "center",
       width: "6%",
-      render: (text) => <Tag color="volcano">{text}</Tag>
+      render: (text) => <Tag color="volcano">{text}</Tag>,
     },
     {
       title: "ประเภทอุปกรณ์",
@@ -129,7 +130,7 @@ const Report = (props) => {
       dataIndex: "GroupName",
       align: "center",
       width: "3%",
-      render: (text) => <Tag color="cyan">{text}</Tag>
+      render: (text) => <Tag color="cyan">{text}</Tag>,
     },
     {
       title: "บริษัท",
@@ -138,7 +139,7 @@ const Report = (props) => {
       align: "center",
       width: "4%",
 
-      render: (text) => <Tag color="orange">{text}</Tag>
+      render: (text) => <Tag color="orange">{text}</Tag>,
     },
 
     {
@@ -148,7 +149,7 @@ const Report = (props) => {
       align: "center",
       width: "4%",
 
-      render: (text) => <Tag color="geekblue">{text}</Tag>
+      render: (text) => <Tag color="geekblue">{text}</Tag>,
     },
 
     {
@@ -158,7 +159,7 @@ const Report = (props) => {
       align: "center",
       width: "3%",
 
-      render: (text) => <Tag color="purple">{text}</Tag>
+      render: (text) => <Tag color="purple">{text}</Tag>,
     },
   ];
 
@@ -169,7 +170,7 @@ const Report = (props) => {
       align: "center",
       fixed: "left",
       width: "5%",
-      render: (text) => <Tag color="blue">{text}</Tag>
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: "หมายเลขคุรุภัณฑ์",
@@ -185,7 +186,7 @@ const Report = (props) => {
       dataIndex: "TypeID",
       align: "center",
       width: "2%",
-      render: (text) => <Tag color="red">{text}</Tag>
+      render: (text) => <Tag color="red">{text}</Tag>,
     },
     {
       title: "สถานที่นำไปใช้",
@@ -206,7 +207,7 @@ const Report = (props) => {
       dataIndex: "Date",
       align: "center",
       width: "7%",
-      render: (text) => <Tag color="volcano">{text}</Tag>
+      render: (text) => <Tag color="volcano">{text}</Tag>,
     },
     {
       title: "ประเภทอุปกรณ์",
@@ -214,12 +215,12 @@ const Report = (props) => {
       dataIndex: "GroupName",
       align: "center",
       width: "5%",
-      render: (text) => <Tag color="orange">{text}</Tag>,
+     
       filters: onhandList.map((e) => {
         return { text: e.GroupName, value: e.GroupName };
       }),
       onFilter: (value, record) => record.GroupName.indexOf(value) === 0,
-      render: (text) => <Tag color="cyan">{text}</Tag>
+      render: (text) => <Tag color="cyan">{text}</Tag>,
     },
     {
       title: "ชื่อ-ผู้เบิก",
@@ -250,7 +251,7 @@ const Report = (props) => {
       align: "center",
       width: "3%",
       fixed: "left",
-      render: (text) => <Tag color="blue">{text}</Tag>
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: "",
@@ -258,7 +259,7 @@ const Report = (props) => {
       dataIndex: "TypeID",
       align: "center",
       width: "3%",
-      render: (text) => <Tag color="magenta">{text}</Tag>
+      render: (text) => <Tag color="magenta">{text}</Tag>,
     },
     {
       title: "วัน/เดือน/ปี ที่เคลื่อนย้าย",
@@ -266,7 +267,7 @@ const Report = (props) => {
       dataIndex: "Date",
       align: "center",
       width: "3%",
-      render: (text) => <Tag color="volcano">{text}</Tag>
+      render: (text) => <Tag color="volcano">{text}</Tag>,
     },
     {
       title: "ประเภทอุปกรณ์",
@@ -274,7 +275,7 @@ const Report = (props) => {
       dataIndex: "GroupName",
       align: "center",
       width: "3%",
-      render: (text) => <Tag color="cyan">{text}</Tag>
+      render: (text) => <Tag color="cyan">{text}</Tag>,
     },
     {
       title: "สถานที่",
@@ -282,7 +283,7 @@ const Report = (props) => {
       dataIndex: "StoreName",
       align: "center",
       width: "3%",
-      render: (text) => <Tag color="geekblue">{text}</Tag>
+      render: (text) => <Tag color="geekblue">{text}</Tag>,
     },
     {
       title: "ที่เก็บ",
@@ -290,7 +291,26 @@ const Report = (props) => {
       dataIndex: "LocName",
       align: "center",
       width: "3%",
-      render: (text) => <Tag color="purple">{text}</Tag>
+      render: (text) => <Tag color="purple">{text}</Tag>,
+    },
+  ];
+
+  const updateKurupanColumns = [
+    {
+      title: "Serial Number",
+      align: "center",
+      dataIndex: "SerialNumber",
+      render: (text) => <Tag color="blue">{text}</Tag>,
+    },
+    {
+      title: "ประเภท",
+      align: "center",
+      dataIndex: "GroupName",
+      filters: onhandList.map((e) => {
+        return { text: e.GroupName, value: e.GroupName };
+      }),
+      onFilter: (value, record) => record.GroupName.indexOf(value) === 0,
+      render: (text) => <Tag color="red">{text}</Tag>,
     },
   ];
 
@@ -301,12 +321,13 @@ const Report = (props) => {
     get_table("transection_deposit");
     get_table("transection_move");
     get_table("department");
+    get_table("updateKurupan");
     props.sendBack("รายงาน");
   }, []);
 
   return (
     <>
-      <div className="anchor" >
+      <div className="anchor">
         <a href="#out">ประวัติการเบิกอุปกรณ์</a>
         <a href="#in">ประวัติการรับอุปกรณ์</a>
         <a href="#move">ประวัติการเคลื่อนย้ายอุปกรณ์</a>
@@ -327,14 +348,13 @@ const Report = (props) => {
           </div>
           <div class="flex-item-right">
             <h3>อุปกรณ์ทั้งหมด</h3>
-           
-              <Table
-                columns={allItemColumn}
-                dataSource={allItem}
-                bordered
-                scroll={{ y: 500, x: 500 }}
-              />
-            
+
+            <Table
+              columns={allItemColumn}
+              dataSource={allItem}
+              bordered
+              scroll={{ y: 500, x: 500 }}
+            />
           </div>
         </div>
 
@@ -342,8 +362,8 @@ const Report = (props) => {
           class="flex-container"
           style={{ marginTop: "5%", borderBottom: "3px dotted black" }}
         >
-          <div id = 'out' class="flex-item-center">
-            <p id="title-report" >ประวัติการเบิกอุปกรณ์</p>
+          <div id="out" class="flex-item-center">
+            <p id="title-report">ประวัติการเบิกอุปกรณ์</p>
             <Table
               columns={withDrawColumns}
               dataSource={transectionWithdaw}
@@ -368,7 +388,7 @@ const Report = (props) => {
           </div>
         </div>
 
-        <div  id="move" class="flex-container" style={{ marginTop: "5%" }}>
+        <div id="move" class="flex-container" style={{ marginTop: "5%" }}>
           <div class="flex-item-center">
             <p id="title-report">ประวัติการเคลื่อนย้ายอุปกรณ์</p>
             <Table

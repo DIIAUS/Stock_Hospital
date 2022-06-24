@@ -141,7 +141,7 @@
 
 
   
-  @media screen and (max-width: 1080px) {
+  @media screen and (max-width: 1353px) {
     .nav-menu {
       display: none;
       flex-direction: column;

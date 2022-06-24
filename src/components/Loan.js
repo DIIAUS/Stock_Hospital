@@ -14,9 +14,8 @@ import {
 
 import {
   LoadingOutlined,
-  SmileOutlined,
   SolutionOutlined,
-  UserOutlined,
+  SafetyCertificateFilled,
 } from "@ant-design/icons";
 import moment from "moment";
 import Axios from "axios";
@@ -24,12 +23,16 @@ import Axios from "axios";
 const { Step } = Steps;
 const { Option } = Select;
 
+
+
+
 const Loan = (props) => {
   const [kurupanNumber, setKurupanNumber] = useState("");
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
+  const [Upakorn, setUpakorn] = useState("");
   const [date, setDate] = useState("");
-  const [toggle ,updateToggle] = useState(false);
+  const [toggle, updateToggle] = useState(false);
 
   const [departmentList, setDepartmentList] = useState([]);
   const [loanItem, setLoanItem] = useState([]);
@@ -59,29 +62,29 @@ const Loan = (props) => {
       Name: name,
       Department: department,
       Date: date,
+      itemName: Upakorn,
     }).then((res) => {
       if (res.data === "success") {
-        message.success('บันทึกข้อมูลสำเร็จ',2);
+        message.success("บันทึกข้อมูลสำเร็จ", 2);
         return form.resetFields();
       } else {
-        message.error('หมายเลขคุรุภัณฑ์นี้ถูกยืมไปแล้ว',2);
+        message.error("หมายเลขคุรุภัณฑ์นี้ถูกยืมไปแล้ว", 2);
       }
     });
   };
 
-  const returnItem=(KurupanNumber)=>{
+  const returnItem = (KurupanNumber) => {
     Axios.post(`http://${props.ServerHose}:3001/returnItem`, {
       KurupanNumber: KurupanNumber,
     }).then((res) => {
       if (res.data === "success") {
-        message.success('ส่งคืนเรียบร้อย',2);
+        message.success("ส่งคืนเรียบร้อย", 2);
         updateToggle(!toggle);
       } else {
         alert("ไม่สำเร็จ");
       }
     });
-
-  }
+  };
 
   function onChanges(value, dateString) {
     setDate(dateString);
@@ -93,17 +96,32 @@ const Loan = (props) => {
     get_table("loan_Item");
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     get_table("loan_Item");
-  },[toggle])
+  }, [toggle]);
 
   return (
     <div>
       <div class="flex-container" style={StyleSheet.DivCss}>
-        <div class="flex-item-left">
+        <div class="flex-item-left" style={{ background: "#eff2df" }}>
           <p style={StyleSheet.TitleSty}>ยืม</p>
           <div style={StyleSheet.BorderCss}>
             <Form layout="vertical" form={form}>
+              <Form.Item
+                name="nameType"
+                label="อุปกรณ์ที่ยืม"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input nametype",
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="ประเภทอุปกรณ์"
+                  onChange={(e) => setUpakorn(e.target.value)}
+                />
+              </Form.Item>
               <Form.Item
                 name="kurupan"
                 label="หมายเลขคุรุภัณฑ์ : "
@@ -207,7 +225,7 @@ const Loan = (props) => {
                     onClick={() => {
                       console.log(date, name, department);
                       send_table();
-                      updateToggle(!toggle)
+                      updateToggle(!toggle);
                     }}
                   >
                     Save
@@ -217,7 +235,7 @@ const Loan = (props) => {
             </Form>
           </div>
         </div>
-        <div class="flex-item-right" style={{background: "white"}}>
+        <div class="flex-item-right" style={{ background: "#eff2df" }}>
           <List
             itemLayout="vertical"
             size="small"
@@ -226,7 +244,7 @@ const Loan = (props) => {
                 console.log(page);
               },
               pageSize: 2,
-              position: "top"
+              position: "top",
             }}
             dataSource={loanItem}
             renderItem={(item) => (
@@ -236,20 +254,36 @@ const Loan = (props) => {
                   width: "100%",
                   marginBottom: "1%",
                   border: "1px dotted gray",
-                  marginTop: "1%"
+                  marginTop: "1%",
                 }}
               >
-                <div style={{background:"#e6e5e3" , color:"black"}}>{item.KurupanNumber}</div>
-                <List.Item key={item.title} extra={<a onClick={()=>{returnItem(item.KurupanNumber)}}>คืนของ</a>}>
+                <div style={{ background: "#e6e5e3", color: "black" }}>
+                  {item.KurupanNumber}
+                </div>
+                <List.Item
+                  key={item.title}
+                  title={"คืนอุปกรณ์"}
+                  extra={
+                    <SafetyCertificateFilled
+                      onClick={() => {
+                        returnItem(item.KurupanNumber);
+                      }}
+                      style={{ fontSize: "250%", color: "green" }}
+                    />
+                  }
+                >
                   <List.Item.Meta
-                    avatar={
-                     <>ข้อมูล :</>
-                    }
+                    avatar={<>ข้อมูล :</>}
                     description={
                       <div style={{ textAlign: "left" }}>
-                        <Tag color="purple">{item.KurupanNumber}</Tag>
-                        <Tag color="green">{item.DepartmentName}</Tag>
-                        <Tag color="gold">{item.Name}</Tag>
+                        <Tag color="gray"> ประเภท : {item.itemName}</Tag>
+                        <Tag color="#916aa6">
+                          เลขคุรุภัณฑ์ : {item.KurupanNumber}
+                        </Tag>
+                        <Tag color="#475c45">
+                          นำไปใช้ที่ : {item.DepartmentName}
+                        </Tag>
+                        <Tag color="#a6a56a">ผู้ยืม : {item.Name}</Tag>
                       </div>
                     }
                   />
@@ -262,19 +296,24 @@ const Loan = (props) => {
                             title="ยืม"
                             // description={`วันที่ยืม ${item.LoanDate.slice(0,10)}`}
                             description={
-                            <div>
                               <div>
-                                <p>{"วันที่ยืม "}{item.LoanDate.slice(0,10)}</p>
+                                <div>
+                                  <p>
+                                    {"วันที่ยืม "}
+                                    {item.LoanDate.slice(0, 10)}
+                                  </p>
+                                </div>
                               </div>
-                            </div>}
+                            }
                             icon={<SolutionOutlined />}
                           />
                           <Step
                             title="กำลังใช้งาน"
-                            description={<Tag color="red">{item.DepartmentName}</Tag>}
+                            description={
+                              <Tag color="#475c45">{item.DepartmentName}</Tag>
+                            }
                             icon={<LoadingOutlined />}
                           />
-                          
                         </Steps>
                       </div>
                     }
@@ -285,6 +324,7 @@ const Loan = (props) => {
           />
         </div>
       </div>
+      
     </div>
   );
 };

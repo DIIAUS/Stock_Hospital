@@ -8,19 +8,20 @@ import TackOut from "./components/TakeOut";
 import Report from "./components/Report";
 import Register from "./components/Register";
 import Loan from "./components/Loan";
+import KurupanUpdate from "./components/KurupanCheck";
+
 
 import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
 
-import { BackTop } from "antd";
+import { BackTop} from "antd";
 import { ToTopOutlined } from "@ant-design/icons";
 
 //  Config APP
 const ServerHose = "192.168.42.221";
-const setTimeOut = 180; //minute
+const setTimeOut = 60; //minute
 //  Config APP
 
 function App() {
-
   const [token, setToken] = useState(() => {
     const saved = localStorage.getItem("TOKEN");
     const initialValue = JSON.parse(saved);
@@ -35,6 +36,31 @@ function App() {
     return initialValue || "";
   });
 
+  function inactivityTime() {
+    var time;
+    
+    // events
+    window.onload = resetTime;
+    window.onclick = resetTime;
+    window.onkeypress = resetTime;
+    window.ontouchstart = resetTime;
+    window.onmousemove = resetTime;
+    window.onmousedown = resetTime;
+    window.addEventListener('scroll', resetTime, true);
+
+    function alertUser() {
+        // do your task here
+        alert("User is inactive.");
+        
+    }
+
+    function resetTime() {
+        clearTimeout(time);
+        time = setTimeout(alertUser, 1000 * 10); // 10 seconds
+    }
+
+};
+
   useEffect(() => {
     localStorage.setItem("TOKEN", JSON.stringify(token));
     localStorage.setItem("USDATA", JSON.stringify(userData));
@@ -46,20 +72,16 @@ function App() {
         setToken(false);
         localStorage.setItem("TOKEN", JSON.stringify(false));
         localStorage.setItem("USDATA", JSON.stringify(""));
-        console.log("This will run after 1 second!");
-        alert("Time out - Please login");
+        alert("กรุณาเข้าสู่ระบบอีกครั้ง");
       }, setTimeOut * 60000);
       return () => clearTimeout(timer);
     }
   }, [token]);
 
-
-
-  
-
   if (token) {
     return (
       <>
+       
         <BrowserRouter>
           <Switch>
             <div>
@@ -104,8 +126,14 @@ function App() {
                 />
               </Route>
 
-              <Redirect exact from="/" to="add" />
+              <Route path="/kurupancheck">
+                <KurupanUpdate
+                  sendBack={(name) => setNavs(name)}
+                  ServerHose={ServerHose}
+                />
+              </Route>
 
+              <Redirect exact from="/" to="add" />
               <BackTop visibilityHeight="10">
                 <div className="btn-to-top">
                   <ToTopOutlined style={{ fontSize: "26px" }} />

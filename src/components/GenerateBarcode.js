@@ -1,7 +1,7 @@
 import React from "react";
 
 const GenerateBarcode = React.forwardRef((props, ref) => {
-  let num = 23241457849093;
+  let num = 2562000000001;
 
   const Barcode = require("react-barcode");
    

@@ -132,9 +132,9 @@ app.get("/:tablename", (req, res) => {
         }
       }
     );
-  }else if (tablename === "loan_Item") {
+  } else if (tablename === "loan_Item") {
     db.query(
-      "SELECT KurupanNumber ,Name , LoanDate ,  department.DepartmentName , Status FROM loan_Item INNER JOIN department ON (department.DepartmentID=loan_Item.DepartmentID) ORDER BY loan_Item.idx DESC;",
+      "SELECT KurupanNumber ,Name , LoanDate ,  department.DepartmentName , Status , itemName FROM loan_Item INNER JOIN department ON (department.DepartmentID=loan_Item.DepartmentID) ORDER BY loan_Item.idx DESC;",
       (err, result) => {
         if (err) {
           console.log(err);
@@ -143,7 +143,29 @@ app.get("/:tablename", (req, res) => {
         }
       }
     );
-  }else {
+  } else if (tablename === "updateKurupan") {
+    db.query(
+      "SELECT SerialNumber, item_group.GroupName FROM item INNER JOIN item_group ON item_group.GroupID = item.GroupID WHERE ID_Kurupan=0 ORDER BY `FristDate` DESC;",
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  } else if (tablename === "getOutsideKurupan") {
+    db.query(
+      "SELECT SerialNumber ,item_group.GroupName, department.DepartmentName FROM transaction INNER JOIN item_group ON transaction.GroupID=item_group.GroupID INNER JOIN department ON transaction.DepartmentID=department.DepartmentID WHERE transaction.TypeID = 'W' AND transaction.KurupanNumber IS NULL ORDER BY transaction.Date DESC; ",
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  } else {
     db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
@@ -162,9 +184,11 @@ app.post("/add_item", (req, res) => {
   const UmCode = req.body.UmCode;
   const FristDate = req.body.FristDate;
   const LastDate = req.body.LastDate;
+  const ID_Kurupan = req.body.ID_Kurupan;
+  const KurupanNumber = req.body.KurupanNumber;
 
   db.query(
-    "INSERT INTO item (SerialNumber, FristDate, GroupID, DeviceOfCompany, Onhand, UmCode, LastDate) VALUES(?,?,?,?,?,?,?)",
+    "INSERT INTO item (SerialNumber, FristDate, GroupID, DeviceOfCompany, Onhand, UmCode, LastDate, ID_Kurupan,KurupanNumber) VALUES(?,?,?,?,?,?,?,?,?)",
     [
       SerialNumber,
       FristDate,
@@ -173,6 +197,8 @@ app.post("/add_item", (req, res) => {
       Onhand,
       UmCode,
       LastDate,
+      ID_Kurupan,
+      KurupanNumber,
     ],
     (err, result) => {
       if (err) {
@@ -193,16 +219,11 @@ app.post("/sendLoan", (req, res) => {
   const LoanDate = req.body.Date;
   const DepartmentID = req.body.Department;
   const Status = 1;
+  const itemName = req.body.itemName;
 
   db.query(
-    "INSERT INTO loan_Item (KurupanNumber,Name,LoanDate,DepartmentID,Status) VALUES(?,?,?,?,?)",
-    [
-      KurupanNumber,
-      Name,
-      LoanDate,
-      DepartmentID,
-      Status
-    ],
+    "INSERT INTO loan_Item (KurupanNumber,Name,LoanDate,DepartmentID,Status,itemName) VALUES(?,?,?,?,?,?)",
+    [KurupanNumber, Name, LoanDate, DepartmentID, Status, itemName],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -228,12 +249,14 @@ app.post("/add_item_transection", (req, res) => {
   const ToLocID = req.body.ToLocID;
   const PersonID = req.body.PersonID;
   const TypeID = req.body.TypeID;
+  const KurupanNumber = req.body.KurupanNumber;
 
   db.query(
-    "INSERT INTO transaction (SerialNumber,TypeID,DepartmentID,Date,GroupID,DeviceOfCompany,StoreID,LocID,ToStoreID,ToLocID,PersonID) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO transaction (SerialNumber,TypeID,KurupanNumber,DepartmentID,Date,GroupID,DeviceOfCompany,StoreID,LocID,ToStoreID,ToLocID,PersonID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       SerialNumber,
       TypeID,
+      KurupanNumber,
       DepartmentID,
       Date,
       GroupID,
@@ -348,20 +371,55 @@ app.post("/sendBarcode", (req, res) => {
   });
 });
 
-app.post("/returnItem", (req,res)=>{
+app.post("/returnItem", (req, res) => {
   const KurupanNumber = req.body.KurupanNumber;
-  db.query("DELETE FROM loan_Item WHERE KurupanNumber=?",
-  [KurupanNumber],
-  (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send("success");
-      console.log("return item successfully");
+  db.query(
+    "DELETE FROM loan_Item WHERE KurupanNumber=?",
+    [KurupanNumber],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send("success");
+        console.log("return item successfully");
+      }
     }
-  }
-  )
-})
+  );
+});
+
+app.post("/InsidekuruUpadate", (req, res) => {
+  const KurupanNumber = req.body.KurupanNumber;
+  const SerialNumber = req.body.SerialNumber;
+  db.query(
+    "UPDATE item SET KurupanNumber = ? , ID_Kurupan=1 WHERE SerialNumber = ?",
+    [KurupanNumber, SerialNumber],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send("success");
+        console.log("update s/n successfully");
+      }
+    }
+  );
+});
+
+app.post("/OutsidekuruUpadate", (req, res) => {
+  const KurupanNumber = req.body.KurupanNumber;
+  const SerialNumber = req.body.SerialNumber;
+  db.query(
+    "UPDATE transaction SET KurupanNumber = ? WHERE SerialNumber = ?",
+    [KurupanNumber, SerialNumber],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send("success");
+        console.log("update s/n successfully");
+      }
+    }
+  );
+});
 
 app.listen("3001", () => {
   console.log("Server is running on port 3001");

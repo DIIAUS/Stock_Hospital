@@ -17,7 +17,10 @@ import {
   Collapse,
   Table,
   Tag,
+  Switch,
 } from "antd";
+
+
 
 import {
   SaveFilled,
@@ -26,6 +29,7 @@ import {
   BankOutlined,
   InfoCircleOutlined,
   LoadingOutlined,
+  BorderlessTableOutlined,
 } from "@ant-design/icons";
 
 const { Panel } = Collapse;
@@ -47,7 +51,12 @@ const AddThing = (props) => {
   const [numberCode, setNumberCode] = useState();
   const [stateBarcode, setStateBarcode] = useState();
   const [toggle, setToggle] = useState(true);
+  const [show, setShow] = useState(true);
+  const [kurupanNumber, setKurupanNumber] = useState(null);
+  const [idKurupan, setIdKurupan] = useState(0);
   const [form] = Form.useForm();
+
+
 
   // GET Databases
   const [group, setGroup] = useState([]);
@@ -71,6 +80,10 @@ const AddThing = (props) => {
     setAllBarcode(arr);
     setStateBarcode(numberCodes);
   };
+  // const resetKurupanNumber = ()=>{
+  //   setKurupanNumber("0");
+  //   console.log(kurupanNumber);
+  // };
 
   const suffixSelector = () => {
     return (
@@ -93,6 +106,20 @@ const AddThing = (props) => {
         </Select>
       </Form.Item>
     );
+  };
+
+  const timeNow = () => {
+    var today = new Date();
+    var date =
+      today.getFullYear() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getDate();
+    var time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + " " + time;
+    return dateTime;
   };
 
   const get_table = (tablename) => {
@@ -120,10 +147,12 @@ const AddThing = (props) => {
       DeviceOfCompany: company,
       Onhand: count,
       UmCode: 1,
-      FristDate: startDate,
-      LastDate: endDate,
+      FristDate: timeNow(),
+      LastDate: timeNow(),
+      ID_Kurupan: idKurupan,
+      KurupanNumber: idKurupan ? kurupanNumber : null,
 
-      Date: startDate,
+      Date: timeNow(),
       DepartmentID: 0,
       StoreID: 1,
       LocID: 1,
@@ -137,7 +166,7 @@ const AddThing = (props) => {
           SerialNumber: serialNumberParam,
           GroupID: type.GroupID,
           DeviceOfCompany: company,
-          Date: startDate,
+          Date: timeNow(),
           DepartmentID: 0,
           StoreID: 1,
           LocID: 1,
@@ -145,6 +174,7 @@ const AddThing = (props) => {
           ToLocID: 0,
           PersonID: 0,
           TypeID: "R",
+          KurupanNumber: idKurupan ? kurupanNumber : null,
         }).then(() => {
           setHistoryStatus((history) => [
             { SN: serialNumberParam, TP: type.GroupName, OH: count },
@@ -158,7 +188,7 @@ const AddThing = (props) => {
   };
 
   const updateBarcodeToTable = () => {
-    Axios.post(`http://${props.ServerHose}:3001/sendBarcode`,{
+    Axios.post(`http://${props.ServerHose}:3001/sendBarcode`, {
       code: stateBarcode,
     });
   };
@@ -217,10 +247,10 @@ const AddThing = (props) => {
 
   const renderInputMN = () => {
     return (
-      <Form.Item name="MN" label="กรอกข้อมูล">
+      <Form.Item name="MN">
         <Input
           placeholder="Serial Number"
-          prefix={<BarcodeOutlined style={{ fontSize: "3rem" }} />}
+          prefix={<BarcodeOutlined style={{ fontSize: "1.5rem" }} />}
           onChange={(e) => {
             setSerialNum(e.target.value);
           }}
@@ -233,11 +263,8 @@ const AddThing = (props) => {
 
   const renderInputBQ = () => {
     return (
-      <Form.Item
-        name="bq"
-        label="Barcode"
-        // rules={[{ required: true, message: "แสกน Barcode เท่านั้น !!!" }]}
-      >
+      <Form.Item 
+      name="BQ">
         <Input
           placeholder="Serial Number"
           prefix={<BarcodeOutlined style={{ fontSize: "3rem" }} />}
@@ -247,9 +274,7 @@ const AddThing = (props) => {
                 company == "" ||
                 type.GroupID == null ||
                 count == null ||
-                count == 0 ||
-                startDate == "" ||
-                endDate == ""
+                count == 0
               ) {
                 message.error({
                   content: "กรอกข้อมูลไม่ครบ",
@@ -302,9 +327,7 @@ const AddThing = (props) => {
               company == "" ||
               type.GroupID == null ||
               count == null ||
-              count == 0 ||
-              startDate == "" ||
-              endDate == ""
+              count == 0
             ) {
               message.error({
                 content: "กรอกข้อมูลไม่ครบ",
@@ -424,7 +447,7 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            label="Group"
+            label="ประเภท"
             rules={[{ required: true, message: "กรุณากรอก Group Items" }]}
           >
             <Select
@@ -464,64 +487,48 @@ const AddThing = (props) => {
           </Form.Item>
 
           <Form.Item
-            label="วันที่กระทำกับสินค้า"
-            rules={[{ required: true, message: "กรุณากรอกวันที่และเวลา" }]}
+            label="เลขคุรุภัณฑ์"
+            rules={[{ required: true, message: "กรอกเลขคุรุภัณฑ์" }]}
           >
-            <RangePicker
-              style={{ position: "relative", maxWidth: "50rem" }}
-              ranges={{
-                Today: [moment(), moment()],
-                "This Month": [
-                  moment().startOf("month"),
-                  moment().endOf("month"),
-                ],
-              }}
-              showTime
-              format="YYYY/MM/DD HH:mm:ss"
-              onChange={onChange}
-            />
+            <div style={{ display: "inline-block" }}>
+              <Switch
+                size="default"
+                checkedChildren="มี"
+                unCheckedChildren="ไม่มี"
+                defaultChecked
+                checked={idKurupan}
+                onChange={() => {
+                  setIdKurupan(!idKurupan);
+                  setKurupanNumber(null);
+                }}
+              ></Switch>
+
+              {idKurupan ? (
+                <Input
+                  prefix={<BorderlessTableOutlined />}
+                  placeholder="กรอกเลขคุรุภัณฑ์"
+                  onChange={(val) => {
+                    setKurupanNumber(val.target.value);
+                  }}
+                />
+              ) : null}
+            </div>
           </Form.Item>
 
           <Form.Item label="Serial Number">
-            <button
-              style={
-                statusRadio
-                  ? {
-                      background: "#000",
-                      color: "white",
-                      width: "6rem",
-                      fontSize: "1.2rem",
-                    }
-                  : { background: "gray" }
-              }
-              onClick={(onChange) => {
-                setStatusRadio(true);
-                setSerialNum("");
-              }}
-            >
-              แสกน
-            </button>
-            <button
-              style={
-                statusRadio
-                  ? { background: "gray" }
-                  : {
-                      background: "#000",
-                      color: "white",
-                      width: "6rem",
-                      fontSize: "1.2rem",
-                    }
-              }
-              onClick={(onChange) => {
-                setStatusRadio(false);
-                setSerialNum("");
-                form.resetFields();
-              }}
-            >
-              กรอก
-            </button>
+            <div style={{ display: "block" }}>
+              <Switch
+                size="default"
+                checkedChildren="ใช้บาร์โค๊ด"
+                unCheckedChildren="กรอกเลขบาร์โค๊ด"
+                defaultChecked
+                checked={statusRadio}
+                onChange={() => {
+                  setStatusRadio(!statusRadio);
+                }}
+              ></Switch>
+            </div>
           </Form.Item>
-
           {statusRadio ? renderInputBQ() : renderInputMN()}
 
           <Form.Item>
@@ -541,12 +548,18 @@ const AddThing = (props) => {
                 <div id="flex-1">Serial Number</div>
                 <div id="flex-2">{serialNum}</div>
               </div>
+              {idKurupan ? (
+                <div className="flex-container">
+                  <div id="flex-1">เลขคุรุภัณฑ์</div>
+                  <div id="flex-2">{kurupanNumber}</div>
+                </div>
+              ) : null}
               <div className="flex-container">
                 <div id="flex-1">บริษัท</div>
                 <div id="flex-2">{company}</div>
               </div>
               <div className="flex-container">
-                <div id="flex-1">Group</div>
+                <div id="flex-1">ประเภท</div>
                 <div id="flex-2">{type.GroupName}</div>
               </div>
               <div className="flex-container">
@@ -557,11 +570,7 @@ const AddThing = (props) => {
               </div>
               <div className="flex-container">
                 <div id="flex-1">วันที่รับ</div>
-                <div id="flex-2">{startDate}</div>
-              </div>
-              <div className="flex-container">
-                <div id="flex-1">วันที่สุดท้าย</div>
-                <div id="flex-2">{endDate}</div>
+                <div id="flex-2">{timeNow()}</div>
               </div>
             </div>
           </Form.Item>

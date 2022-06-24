@@ -10,6 +10,7 @@ import {
   Modal,
   message,
   Tag,
+  Switch,
 } from "antd";
 import {
   InfoCircleOutlined,
@@ -25,12 +26,13 @@ const { Panel } = Collapse;
 
 const TakeOut = (props) => {
   const [serialNum, setSerialNum] = useState("");
-  const [kurupan, setKurupan] = useState("-");
+  const [kurupan, setKurupan] = useState(null);
   const [department, setDepartment] = useState({ ID: 0, NAME: "" });
   const [name, setName] = useState({ ID: 0, NAME: "-" });
   const [statusRadio, setStatusRadio] = useState(true);
   const [historyStatus, setHistoryStatus] = useState([]);
   const [displaySN, setDisplaySN] = useState("");
+  const [idKurupan, setIdKurupan] = useState(0);
   const [form] = Form.useForm();
 
   // DATABASE
@@ -137,8 +139,6 @@ const TakeOut = (props) => {
     });
   };
 
-
-
   const progress = (value) => {
     let TIME = 1;
     const modal = Modal.info({
@@ -181,10 +181,10 @@ const TakeOut = (props) => {
 
   const renderInputMN = () => {
     return (
-      <Form.Item name="MN" label="กรอกข้อมูล">
+      <Form.Item name="MN" >
         <Input
           placeholder="Serial Number"
-          prefix={<BarcodeOutlined style={{ fontSize: "3rem" }} />}
+          prefix={<BarcodeOutlined style={{ fontSize: "1.5rem" }} />}
           onChange={(e) => {
             setSerialNum(e.target.value);
           }}
@@ -199,7 +199,6 @@ const TakeOut = (props) => {
     return (
       <Form.Item
         name="bq"
-        label="Barcode"
         // rules={[{ required: true, message: "แสกน Barcode เท่านั้น !!!" }]}
       >
         <Input
@@ -207,7 +206,7 @@ const TakeOut = (props) => {
           prefix={<BarcodeOutlined style={{ fontSize: "3rem" }} />}
           onChange={(e) => {
             if (e.target.value.length == 13) {
-              if ( department.NAME == "" || name.NAME == "") {
+              if (department.NAME == "" || name.NAME == "") {
                 message.error({
                   content: "กรอกข้อมูลไม่ครบ",
                   style: {
@@ -279,14 +278,14 @@ const TakeOut = (props) => {
       title: "GroupName",
       dataIndex: "GroupName",
       align: "center",
-      render: (text) => <Tag color="geekblue">{text}</Tag>
+      render: (text) => <Tag color="geekblue">{text}</Tag>,
     },
     {
       title: "Onhand",
       className: "column-sum",
       dataIndex: "Onhand",
       align: "center",
-      render: (text) => <Tag color="volcano">{text}</Tag>
+      render: (text) => <Tag color="volcano">{text}</Tag>,
     },
   ];
 
@@ -395,63 +394,47 @@ const TakeOut = (props) => {
 
           {/*INPUTKURUPAN*/}
           <Form.Item
-            
             label="เลขคุรุภัณฑ์"
-            tooltip={{
-              title: "ex: 121212",
-              icon: <InfoCircleOutlined />,
-            }}
+            rules={[{ required: true, message: "กรอกเลขคุรุภัณฑ์" }]}
           >
-            <Input
-              prefix={<BorderlessTableOutlined />}
-              placeholder="เลขคุรุภัณฑ์"
-              onChange={(e) => {
-                setKurupan(e.target.value);
-              }}
-            />
+            <div style={{ display: "inline-block" }}>
+              <Switch
+                size="default"
+                checkedChildren="มี"
+                unCheckedChildren="ไม่มี"
+                defaultChecked
+                checked={idKurupan}
+                onChange={() => {
+                  setIdKurupan(!idKurupan);
+                }}
+              ></Switch>
+
+              {idKurupan ? (
+                <Input
+                  prefix={<BorderlessTableOutlined />}
+                  placeholder="กรอกเลขคุรุภัณฑ์"
+                  onChange={(val) => {
+                    setKurupan(val.target.value);
+                  }}
+                />
+              ) : null}
+            </div>
           </Form.Item>
 
           <Form.Item label="Serial Number">
-            <button
-              style={
-                statusRadio
-                  ? {
-                      background: "#000",
-                      color: "white",
-                      width: "6rem",
-                      fontSize: "1.2rem",
-                    }
-                  : { background: "gray" }
-              }
-              onClick={(onChange) => {
-                setStatusRadio(true);
-                setSerialNum("");
-                form.resetFields();
-              }}
-            >
-              แสกน
-            </button>
-            <button
-              style={
-                statusRadio
-                  ? { background: "gray" }
-                  : {
-                      background: "#000",
-                      color: "white",
-                      width: "6rem",
-                      fontSize: "1.2rem",
-                    }
-              }
-              onClick={(onChange) => {
-                setStatusRadio(false);
-                setSerialNum("");
-                // form.resetFields();
-              }}
-            >
-              กรอก
-            </button>
+            <div style={{ display: "block" }}>
+              <Switch
+                size="default"
+                checkedChildren="ใช้บาร์โค๊ด"
+                unCheckedChildren="กรอกเลขบาร์โค๊ด"
+                defaultChecked
+                checked={statusRadio}
+                onChange={() => {
+                  setStatusRadio(!statusRadio);
+                }}
+              ></Switch>
+            </div>
           </Form.Item>
-
           {statusRadio ? renderInputBQ() : renderInputMN()}
 
           <Form.Item>
@@ -473,11 +456,13 @@ const TakeOut = (props) => {
                   <div id="flex-2">{serialNum}</div>
                 </div>
               )}
+              {idKurupan ? (
+                <div className="flex-container">
+                  <div id="flex-1">เลขคุรุภัณฑ์</div>
+                  <div id="flex-2">{kurupan}</div>
+                </div>
+              ) : null}
 
-              <div className="flex-container">
-                <div id="flex-1">เลขคุรุภัณฑ์</div>
-                <div id="flex-2">{kurupan}</div>
-              </div>
               <div className="flex-container">
                 <div id="flex-1">นำไปใช้แผนก</div>
                 <div id="flex-2">{department.NAME}</div>
